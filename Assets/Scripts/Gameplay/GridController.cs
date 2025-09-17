@@ -10,10 +10,10 @@ public class GridController : MonoBehaviour
     public event Action OnLevelCompleted;
 
     [Header("Grid Settings")]
-    private int _width = 4;
-    private int _height = 5;
-    private float _cellSize = 1.2f;
-    private float _collectAnimationDelay = 0.05f;
+    [SerializeField] private Vector2Int defaultGridSize = new Vector2Int(4, 5);
+    [SerializeField] private Vector2Int tutorialGridSize = new Vector2Int(3, 3);
+    [SerializeField] private float cellSize = 1.2f;
+    [SerializeField] private float collectAnimationDelay = 0.05f;
 
     [Header("Component References")]
     [SerializeField] private InputManager inputManager;
@@ -25,22 +25,119 @@ public class GridController : MonoBehaviour
     private Vector2 _gridOffset;
     private PropView _draggedProp;
     private bool _isBusy = false;
-    private int _groupsCollectedCount = 0; // <-- Счетчик собранных групп
+    private int _groupsCollectedCount = 0;
     private bool _isLevelCompleted = false;
+    
+    private int _width;
+    private int _height;
 
-    public void Initialize(LevelData levelData, PropPool pool, UIController uiController)
+    public void Initialize(LevelData levelData, PropPool pool, UIController uiController, bool isTutorial)
     {
         _propPool = pool;
         _uiController = uiController;
+        
+        if (isTutorial)
+        {
+            _width = tutorialGridSize.x;
+            _height = tutorialGridSize.y;
+        }
+        else
+        {
+            _width = defaultGridSize.x;
+            _height = defaultGridSize.y;
+        }
+        
         _gridManager = new GridManager(_width, _height);
         _isLevelCompleted = false;
-        _groupsCollectedCount = 0; // Сбрасываем счетчик при инициализации
+        _groupsCollectedCount = 0;
         
         CalculateGridOffset();
-        PrepareSpawnQueue(levelData);
+        PrepareSpawnQueue(levelData, isTutorial);
         
         SubscribeToInput();
         StartCoroutine(GenerateInitialField());
+    }
+    
+    private void PrepareSpawnQueue(LevelData levelData, bool isTutorial)
+    {
+        if (isTutorial)
+        {
+            PrepareTutorialSpawnQueue(levelData);
+            return; 
+        }
+        
+        var itemsForInitialGrid = new List<ItemSpawnInfo>();
+        var remainingQueueItems = new List<ItemSpawnInfo>();
+
+        if (levelData.requiredGroups.Count < 2)
+        {
+            Debug.LogWarning("В уровне меньше 2 групп, используется стандартное перемешивание.");
+            var allItems = levelData.requiredGroups
+                .SelectMany(group => group.items.Select(item => new ItemSpawnInfo(group, item)))
+                .OrderBy(x => Random.value)
+                .ToList();
+            _spawnQueue = new Queue<ItemSpawnInfo>(allItems);
+            return;
+        }
+
+        var shuffledGroups = levelData.requiredGroups.OrderBy(x => Random.value).ToList();
+        var guaranteedGroups = shuffledGroups.Take(2).ToList();
+        var otherGroups = shuffledGroups.Skip(2).ToList();
+
+        foreach (var group in guaranteedGroups)
+        {
+            foreach (var item in group.items)
+            {
+                itemsForInitialGrid.Add(new ItemSpawnInfo(group, item));
+            }
+        }
+
+        foreach (var group in otherGroups)
+        {
+            if (group.items.Count > 0)
+            {
+                var tempItemsInGroup = new List<ItemData>(group.items);
+                int randomIndex = Random.Range(0, tempItemsInGroup.Count);
+                ItemData randomItem = tempItemsInGroup[randomIndex];
+                itemsForInitialGrid.Add(new ItemSpawnInfo(group, randomItem));
+                tempItemsInGroup.RemoveAt(randomIndex);
+                foreach (var item in tempItemsInGroup)
+                {
+                    remainingQueueItems.Add(new ItemSpawnInfo(group, item));
+                }
+            }
+        }
+
+        itemsForInitialGrid = itemsForInitialGrid.OrderBy(x => Random.value).ToList();
+        remainingQueueItems = remainingQueueItems.OrderBy(x => Random.value).ToList();
+
+        _spawnQueue = new Queue<ItemSpawnInfo>(itemsForInitialGrid.Concat(remainingQueueItems));
+    }
+
+    private void PrepareTutorialSpawnQueue(LevelData levelData)
+    {
+        var tutorialItems = new List<ItemSpawnInfo>();
+
+        var tutorialGroups = levelData.requiredGroups.Take(3).ToList();
+
+        foreach (var group in tutorialGroups)
+        {
+            var itemsInGroup = group.items.Take(3);
+            foreach (var item in itemsInGroup)
+            {
+                tutorialItems.Add(new ItemSpawnInfo(group, item));
+            }
+        }
+
+        int expectedItemCount = _width * _height;
+        if (tutorialItems.Count != expectedItemCount)
+        {
+            Debug.LogError($"Ошибка конфигурации туториала! Ожидалось {expectedItemCount} предметов, но было найдено {tutorialItems.Count}. " +
+                           $"Убедитесь, что для Уровня 1 назначено минимум 3 группы, и в каждой из них есть минимум 3 предмета.");
+        }
+        
+        var shuffledItems = tutorialItems.OrderBy(x => Random.value).ToList();
+        _spawnQueue = new Queue<ItemSpawnInfo>(shuffledItems);
     }
 
     private IEnumerator ClearRows(List<int> rows)
@@ -75,7 +172,7 @@ public class GridController : MonoBehaviour
                     }));
                     flyingCoroutines.Add(flyCoroutine);
                     
-                    yield return new WaitForSeconds(_collectAnimationDelay);
+                    yield return new WaitForSeconds(0.1f);
                 }
             }
 
@@ -199,74 +296,9 @@ public class GridController : MonoBehaviour
     
     private void CalculateGridOffset()
     {
-        float totalGridWidth = (_width - 1) * _cellSize;
-        float totalGridHeight = (_height - 1) * _cellSize;
+        float totalGridWidth = (_width - 1) * cellSize;
+        float totalGridHeight = (_height - 1) * cellSize;
         _gridOffset = new Vector2(-totalGridWidth / 2f, -totalGridHeight / 2f);
-    }
-    
-    private void PrepareSpawnQueue(LevelData levelData)
-    {
-        // 1. Создаем списки для предметов, которые появятся сразу, и для тех, что в запасе.
-        var itemsForInitialGrid = new List<ItemSpawnInfo>();
-        var remainingQueueItems = new List<ItemSpawnInfo>();
-
-        if (levelData.requiredGroups.Count < 2)
-        {
-            Debug.LogWarning("В уровне меньше 2 групп, используется стандартное перемешивание.");
-            // Если групп мало, используем старый простой метод
-            var allItems = levelData.requiredGroups
-                .SelectMany(group => group.items.Select(item => new ItemSpawnInfo(group, item)))
-                .OrderBy(x => Random.value)
-                .ToList();
-            _spawnQueue = new Queue<ItemSpawnInfo>(allItems);
-            return;
-        }
-
-        // 2. Перемешиваем группы, чтобы выбрать 2 случайные для гарантии на старте.
-        var shuffledGroups = levelData.requiredGroups.OrderBy(x => Random.value).ToList();
-        
-        var guaranteedGroups = shuffledGroups.Take(2).ToList();
-        var otherGroups = shuffledGroups.Skip(2).ToList();
-
-        // 3. Добавляем ВСЕ предметы из 2-х гарантированных групп в стартовый пул.
-        foreach (var group in guaranteedGroups)
-        {
-            Debug.Log("start group: " + group.groupKey);
-            foreach (var item in group.items)
-            {
-                itemsForInitialGrid.Add(new ItemSpawnInfo(group, item));
-            }
-        }
-
-        // 4. Из всех ОСТАЛЬНЫХ групп берем по ОДНОМУ случайному предмету.
-        foreach (var group in otherGroups)
-        {
-            if (group.items.Count > 0)
-            {
-                var tempItemsInGroup = new List<ItemData>(group.items);
-                
-                int randomIndex = Random.Range(0, tempItemsInGroup.Count);
-                ItemData randomItem = tempItemsInGroup[randomIndex];
-                
-                // Один случайный предмет — на стартовое поле.
-                itemsForInitialGrid.Add(new ItemSpawnInfo(group, randomItem));
-                
-                // Удаляем его из временного списка.
-                tempItemsInGroup.RemoveAt(randomIndex);
-                
-                // Все оставшиеся предметы этой группы — в очередь запаса.
-                foreach (var item in tempItemsInGroup)
-                {
-                    remainingQueueItems.Add(new ItemSpawnInfo(group, item));
-                }
-            }
-        }
-
-        // 5. Перемешиваем оба списка и объединяем их в финальную очередь спавна.
-        itemsForInitialGrid = itemsForInitialGrid.OrderBy(x => Random.value).ToList();
-        remainingQueueItems = remainingQueueItems.OrderBy(x => Random.value).ToList();
-
-        _spawnQueue = new Queue<ItemSpawnInfo>(itemsForInitialGrid.Concat(remainingQueueItems));
     }
     
     private IEnumerator GenerateInitialField()
@@ -353,8 +385,8 @@ public class GridController : MonoBehaviour
     private Vector2Int GetGridPositionFromWorld(Vector2 worldPos)
     {
         Vector2 localPos = worldPos - ((Vector2)transform.position + _gridOffset);
-        int x = Mathf.RoundToInt(localPos.x / _cellSize);
-        int y = Mathf.RoundToInt(localPos.y / _cellSize);
+        int x = Mathf.RoundToInt(localPos.x / cellSize);
+        int y = Mathf.RoundToInt(localPos.y / cellSize);
         return new Vector2Int(x, y);
     }
     
@@ -366,7 +398,7 @@ public class GridController : MonoBehaviour
 
     private Vector3 GetWorldPosition(int x, int y)
     {
-        return (Vector3)_gridOffset + new Vector3(x * _cellSize, y * _cellSize, 0) + transform.position;
+        return (Vector3)_gridOffset + new Vector3(x * cellSize, y * cellSize, 0) + transform.position;
     }
     
     private class ItemSpawnInfo

@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Linq; // <-- Добавьте эту строку для использования .Take()
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -28,12 +29,27 @@ public class GameplayController : MonoBehaviour
         yield return StartCoroutine(screenFader.FadeIn());
 
         _currentLevelNumber = DataManager.Instance.Progress.currentLevel;
-        LevelData levelData = levelManager.GetLevel(_currentLevelNumber);
+        LevelData originalLevelData = levelManager.GetLevel(_currentLevelNumber);
 
-        if (levelData != null)
+        if (originalLevelData != null)
         {
-            uiController.InitializeUIForLevel(levelData);
-            gridController.Initialize(levelData, propPool, uiController);
+            bool isTutorial = (_currentLevelNumber == 1);
+            LevelData activeLevelData = originalLevelData;
+
+            // --- ИЗМЕНЕНИЕ ЗДЕСЬ ---
+            // Если это туториал, мы создаем новый объект LevelData
+            // который содержит только те группы, что реально используются в уровне.
+            if (isTutorial)
+            {
+                // Создаем новый экземпляр данных уровня
+                activeLevelData = new LevelData();
+                // Копируем в него только первые 3 группы из оригинального уровня
+                activeLevelData.requiredGroups = originalLevelData.requiredGroups.Take(3).ToList();
+            }
+
+            // Теперь оба контроллера получают одинаковые, корректные данные об уровне
+            uiController.InitializeUIForLevel(activeLevelData);
+            gridController.Initialize(activeLevelData, propPool, uiController, isTutorial);
         }
         else
         {
@@ -44,11 +60,7 @@ public class GameplayController : MonoBehaviour
     private void HandleLevelCompleted()
     {
         Debug.Log($"LEVEL {_currentLevelNumber} COMPLETED!");
-        
-        // --- ИЗМЕНЕНИЕ ЗДЕСЬ ---
-        // Просто сообщаем DataManager, что нужно перейти на следующий уровень.
         DataManager.Instance.AdvanceToNextLevel();
-        
         levelCompletePopup.Show();
     }
     
