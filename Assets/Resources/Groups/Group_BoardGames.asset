@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aca5ea0d96e707f42ac738c9a84e4c78, type: 3}
+  m_Name: Group_BoardGames
+  m_EditorClassIdentifier: 
+  groupKey: BoardGames
+  items:
+  - {fileID: 11400000, guid: 062976e470e1e7243a56dc022db20591, type: 2}
+  - {fileID: 11400000, guid: cab572ea1e134ff4f9b56d2c18e9e054, type: 2}
+  - {fileID: 11400000, guid: dcf3582246f205f4a916076845b6e7c1, type: 2}
+  - {fileID: 11400000, guid: 836f078b5156b61418b1af61ac5057cd, type: 2}

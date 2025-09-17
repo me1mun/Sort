@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aca5ea0d96e707f42ac738c9a84e4c78, type: 3}
+  m_Name: Group_Cemetery
+  m_EditorClassIdentifier: 
+  groupKey: Cemetery
+  items:
+  - {fileID: 11400000, guid: 505ca7c545120cf4fa87c593f77b2f24, type: 2}
+  - {fileID: 11400000, guid: d723b3569799dc9488bfd333d3678e95, type: 2}
+  - {fileID: 11400000, guid: d5b43fd46cf850b42be6dbf130f599cf, type: 2}
+  - {fileID: 11400000, guid: df664379d920a7f4b8fde2fb453cc9fc, type: 2}

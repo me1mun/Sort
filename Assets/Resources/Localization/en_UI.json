@@ -1,0 +1,6 @@
+{
+  "items": [
+    { "key": "level_complete", "value": "Level Complete!" },
+    { "key": "continue", "value": "Continue" }
+  ]
+}
