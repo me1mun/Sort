@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: Item_Paper
   m_EditorClassIdentifier: 
   itemKey: Paper
-  icon: {fileID: 21300000, guid: eee7ec1898cc8194f906b8e5bea75116, type: 3}
+  icon: {fileID: 21300000, guid: 157a126fc121cc443bcc4ec1a1d42aac, type: 3}

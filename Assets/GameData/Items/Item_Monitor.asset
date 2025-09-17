@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: Item_Monitor
   m_EditorClassIdentifier: 
   itemKey: Monitor
-  icon: {fileID: 21300000, guid: 0b97bf1f14655ea4fa0d9c9c3482387d, type: 3}
+  icon: {fileID: 21300000, guid: 09ddfa74b00639048877391445e6ad32, type: 3}

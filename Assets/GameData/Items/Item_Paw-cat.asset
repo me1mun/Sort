@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: Item_Paw-cat
   m_EditorClassIdentifier: 
   itemKey: Paw-cat
-  icon: {fileID: 21300000, guid: 207be1c0a176cab45b8cfa77344dfc16, type: 3}
+  icon: {fileID: 21300000, guid: 4e0263b38f1efe940983f8d3a3d62369, type: 3}

@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: Item_SdCard
   m_EditorClassIdentifier: 
   itemKey: SdCard
-  icon: {fileID: 21300000, guid: 485f9b2a96b7a3e44b13466c2bac4c77, type: 3}
+  icon: {fileID: 21300000, guid: bf0930aa639d2ca49a3aac801c3be760, type: 3}

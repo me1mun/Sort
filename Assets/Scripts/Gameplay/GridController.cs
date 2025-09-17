@@ -10,10 +10,10 @@ public class GridController : MonoBehaviour
     public event Action OnLevelCompleted;
 
     [Header("Grid Settings")]
-    [SerializeField] private int _width = 5;
-    [SerializeField] private int _height = 7;
-    [SerializeField] private float _cellSize = 1.2f;
-    [SerializeField] private float _collectAnimationDelay = 0.05f;
+    private int _width = 4;
+    private int _height = 5;
+    private float _cellSize = 1.2f;
+    private float _collectAnimationDelay = 0.05f;
 
     [Header("Component References")]
     [SerializeField] private InputManager inputManager;

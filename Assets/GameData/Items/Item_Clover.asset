@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: Item_Clover
   m_EditorClassIdentifier: 
   itemKey: Clover
-  icon: {fileID: 21300000, guid: e8ac4891bca027649b7ee150930bbce8, type: 3}
+  icon: {fileID: 21300000, guid: f4db589c4b90a954486074676d777a38, type: 3}

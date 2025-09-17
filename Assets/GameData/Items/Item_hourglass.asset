@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: Item_hourglass
   m_EditorClassIdentifier: 
   itemKey: hourglass
-  icon: {fileID: 21300000, guid: 4927c9fd6a39725418e44d2a797ab687, type: 3}
+  icon: {fileID: 21300000, guid: 523cf8d4c0fff8043b2f95fcd584fe79, type: 3}

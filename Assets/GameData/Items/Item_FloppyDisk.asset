@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: Item_FloppyDisk
   m_EditorClassIdentifier: 
   itemKey: FloppyDisk
-  icon: {fileID: 21300000, guid: e2a005c0aa89ea343be3fced983674d4, type: 3}
+  icon: {fileID: 21300000, guid: b0b1289094fc6ab41ba0c58fd5b301ec, type: 3}

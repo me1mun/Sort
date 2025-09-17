@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: Item_Handbag
   m_EditorClassIdentifier: 
   itemKey: Handbag
-  icon: {fileID: 21300000, guid: bddf695ac85b7a94d975491db371dd13, type: 3}
+  icon: {fileID: 21300000, guid: 4dceb40703c6cd546b1bf660eee36644, type: 3}

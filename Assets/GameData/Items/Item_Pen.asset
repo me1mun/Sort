@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: Item_Pen
   m_EditorClassIdentifier: 
   itemKey: Pen
-  icon: {fileID: 21300000, guid: 2f0fd75463dc3e84b8f0a83ed0f720de, type: 3}
+  icon: {fileID: 21300000, guid: a0f2e4e7166b9f046b4af022e2224bef, type: 3}

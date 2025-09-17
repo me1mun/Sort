@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: Item_Alarm
   m_EditorClassIdentifier: 
   itemKey: Alarm
-  icon: {fileID: 21300000, guid: bc7a2882fe7387f44884c5ded8054952, type: 3}
+  icon: {fileID: 21300000, guid: 8ba694e01ee6b334c9e59b40f17eb4b7, type: 3}

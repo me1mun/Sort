@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: Item_Saw
   m_EditorClassIdentifier: 
   itemKey: Saw
-  icon: {fileID: 21300000, guid: a7cc15bad2c8f744292c21bc1c227341, type: 3}
+  icon: {fileID: 21300000, guid: f372ab24e7a88794faf1d25875992048, type: 3}

@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: Item_CompactDisk
   m_EditorClassIdentifier: 
   itemKey: CompactDisk
-  icon: {fileID: 21300000, guid: e7d715e2de3e9b947856a676a5d11fec, type: 3}
+  icon: {fileID: 21300000, guid: 69daa2a92a4f38948a09cdd82bcec152, type: 3}

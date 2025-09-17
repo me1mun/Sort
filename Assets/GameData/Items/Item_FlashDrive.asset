@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: Item_FlashDrive
   m_EditorClassIdentifier: 
   itemKey: FlashDrive
-  icon: {fileID: 21300000, guid: 74bc1ce448ecdca4a8575b5945eb133f, type: 3}
+  icon: {fileID: 21300000, guid: bd02f8bc7c0f66745955fedf0906fb86, type: 3}

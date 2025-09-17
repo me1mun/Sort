@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: Item_Briefcase
   m_EditorClassIdentifier: 
   itemKey: Briefcase
-  icon: {fileID: 21300000, guid: f817832b774903a4cb5d6b22fca6a8c6, type: 3}
+  icon: {fileID: 21300000, guid: 1ae6b9b93fcbc3046a7ba33be957d5df, type: 3}

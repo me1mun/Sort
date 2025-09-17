@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: Item_SmartWatch
   m_EditorClassIdentifier: 
   itemKey: SmartWatch
-  icon: {fileID: 21300000, guid: 4d9b5b48c5f2e234bad333ad0a31a8b9, type: 3}
+  icon: {fileID: 21300000, guid: a261490a51001b04b8c50450706d656e, type: 3}

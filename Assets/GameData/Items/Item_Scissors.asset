@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: Item_Scissors
   m_EditorClassIdentifier: 
   itemKey: Scissors
-  icon: {fileID: 21300000, guid: dd4ab2e2a6208ee46a7431f05d3bd7cb, type: 3}
+  icon: {fileID: 21300000, guid: d9646dbe7f0094b4e8e429147c6ae1d6, type: 3}

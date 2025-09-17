@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: Item_Horseshoe
   m_EditorClassIdentifier: 
   itemKey: Horseshoe
-  icon: {fileID: 21300000, guid: cd982f7ba5990ea43ab256496960daee, type: 3}
+  icon: {fileID: 21300000, guid: a1ce78165f65aa945bb0c5a71947782a, type: 3}
