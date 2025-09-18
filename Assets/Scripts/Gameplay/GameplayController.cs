@@ -56,6 +56,9 @@ public class GameplayController : MonoBehaviour
                 activeLevelData.requiredGroups = originalLevelData.requiredGroups.Take(3).ToList();
             }
             
+            // Добавлена эта строка для обновления UI
+            uiController.UpdateLevelText(_currentProgress.DisplayLevel);
+            
             uiController.InitializeUIForLevel(activeLevelData);
             gridController.Initialize(activeLevelData, propPool, uiController, isTutorial);
         }
