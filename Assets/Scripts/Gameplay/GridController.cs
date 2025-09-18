@@ -10,10 +10,10 @@ public class GridController : MonoBehaviour
     public event Action OnLevelCompleted;
 
     [Header("Grid Settings")]
-    [SerializeField] private Vector2Int defaultGridSize = new Vector2Int(4, 5);
-    [SerializeField] private Vector2Int tutorialGridSize = new Vector2Int(3, 3);
-    [SerializeField] private float cellSize = 1.2f;
-    [SerializeField] private float collectAnimationDelay = 0.05f;
+    private Vector2Int defaultGridSize = new Vector2Int(4, 5);
+    private Vector2Int tutorialGridSize = new Vector2Int(3, 3);
+    private float cellSize = 1.1f;
+    private float collectAnimationDelay = 0.05f;
 
     [Header("Component References")]
     [SerializeField] private InputManager inputManager;

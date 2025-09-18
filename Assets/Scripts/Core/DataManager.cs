@@ -10,6 +10,8 @@ public class DataManager : MonoBehaviour
 
     private string _progressSavePath;
     private string _settingsSavePath;
+    
+    private int _cachedPredefinedLevelsCount;
 
     private void Awake()
     {
@@ -22,6 +24,25 @@ public class DataManager : MonoBehaviour
         
         LoadProgress();
         LoadSettings();
+    }
+    
+    public void CachePredefinedLevelCount(int count)
+    {
+        _cachedPredefinedLevelsCount = count;
+    }
+
+    public void AdvanceToNextLevel()
+    {
+        if (Progress.predefinedLevelIndex < _cachedPredefinedLevelsCount)
+        {
+            Progress.predefinedLevelIndex++;
+        }
+        else
+        {
+            Progress.randomLevelCount++;
+        }
+        
+        SaveProgress();
     }
 
     public void LoadProgress()
@@ -74,14 +95,5 @@ public class DataManager : MonoBehaviour
         Settings.soundVolume = step / 3.0f;
         AudioManager.Instance.SetSoundVolume(Settings.soundVolume);
         SaveSettings();
-    }
-
-    // --- ИЗМЕНЕНИЕ ЗДЕСЬ ---
-    // Возвращаем простой метод, который всегда увеличивает уровень на 1.
-    public void AdvanceToNextLevel()
-    {
-        Progress.currentLevel++;
-        SaveProgress();
-        Debug.Log($"Progress saved! Next level to load is now {Progress.currentLevel}");
     }
 }

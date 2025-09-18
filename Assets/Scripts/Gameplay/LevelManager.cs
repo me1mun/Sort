@@ -7,7 +7,6 @@ public class LevelManager : MonoBehaviour
     [Header("Созданные вручную уровни")]
     [SerializeField] private List<LevelData> predefinedLevels;
     
-    // --- ВОТ ЭТА СТРОКА БЫЛА ПРОПУЩЕНА ---
     public int PredefinedLevelsCount => predefinedLevels.Count;
     
     private const int GROUPS_IN_RANDOM_LEVEL = 7;
@@ -36,11 +35,9 @@ public class LevelManager : MonoBehaviour
         int predefinedIndex = levelNumber - 1;
         if (predefinedIndex >= 0 && predefinedIndex < predefinedLevels.Count)
         {
-            Debug.Log($"Loading predefined level: {levelNumber}");
             return predefinedLevels[predefinedIndex];
         }
         
-        Debug.Log($"Generating random level for level: {levelNumber}");
         return GenerateRandomLevel();
     }
     
@@ -48,16 +45,10 @@ public class LevelManager : MonoBehaviour
     {
         if (_loadedGroups == null || _loadedGroups.Count == 0)
         {
-            Debug.LogError("Список доступных групп пуст. Невозможно сгенерировать уровень.");
             return null;
         }
 
         int groupsToSelect = Mathf.Min(GROUPS_IN_RANDOM_LEVEL, _loadedGroups.Count);
-
-        if (_loadedGroups.Count < GROUPS_IN_RANDOM_LEVEL)
-        {
-            Debug.LogWarning($"Недостаточно групп для генерации полного уровня (найдено: {_loadedGroups.Count}, требуется: {GROUPS_IN_RANDOM_LEVEL}). Генерируется уровень из {groupsToSelect} групп.");
-        }
 
         int maxAttempts = 100;
         for (int i = 0; i < maxAttempts; i++)

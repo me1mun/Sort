@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-// Уровень: теперь это просто список групп, необходимых для прохождения
 [Serializable]
 public class LevelData
 {
@@ -12,31 +11,33 @@ public class LevelData
 [Serializable]
 public class ProgressData
 {
-    public int currentLevel;
+    public int predefinedLevelIndex;
+    public int randomLevelCount;
 
     public ProgressData()
     {
-        currentLevel = 1;
+        predefinedLevelIndex = 0;
+        randomLevelCount = 0;
     }
+    
+    public int DisplayLevel => predefinedLevelIndex + randomLevelCount + 1;
 }
 
-// Настройки игры
 [Serializable]
 public class SettingsData
 {
     public float musicVolume;
     public float soundVolume;
-    public string languageCode; // "en", "uk", etc.
+    public string languageCode;
 
     public SettingsData()
     {
         musicVolume = 0.75f;
         soundVolume = 0.75f;
-        languageCode = null; // Будет определяться автоматически
+        languageCode = null;
     }
 }
 
-// Вспомогательный класс для парсинга JSON файлов локализации
 [Serializable]
 public class LocalizationData
 {
