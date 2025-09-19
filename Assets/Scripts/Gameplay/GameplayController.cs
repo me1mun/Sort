@@ -13,7 +13,8 @@ public class GameplayController : MonoBehaviour
 
     [Header("UI Components")]
     [SerializeField] private LevelCompletePopup levelCompletePopup;
-    [SerializeField] private ScreenFader screenFader;
+    // Удаляем ссылку на ScreenFader отсюда, он теперь глобальный
+    // [SerializeField] private ScreenFader screenFader; 
     
     private ProgressData _currentProgress;
 
@@ -28,8 +29,9 @@ public class GameplayController : MonoBehaviour
     private IEnumerator StartLevelRoutine()
     {
         levelCompletePopup.Hide();
-        yield return StartCoroutine(screenFader.FadeIn());
-
+        // Мы больше не вызываем FadeIn отсюда, 
+        // так как он стал частью общего процесса загрузки сцены
+        
         _currentProgress = DataManager.Instance.Progress;
         int predefinedLevelsCount = levelManager.PredefinedLevelsCount;
         
@@ -56,7 +58,6 @@ public class GameplayController : MonoBehaviour
                 activeLevelData.requiredGroups = originalLevelData.requiredGroups.Take(3).ToList();
             }
             
-            // Добавлена эта строка для обновления UI
             uiController.UpdateLevelText(_currentProgress.DisplayLevel);
             
             uiController.InitializeUIForLevel(activeLevelData);
@@ -66,6 +67,9 @@ public class GameplayController : MonoBehaviour
         {
             Debug.LogError($"Failed to load level data for level {levelToLoad}! Check LevelManager configuration.");
         }
+
+        // Возвращаем yield return null, так как анимация FadeIn теперь не здесь
+        yield return null;
     }
 
     private void HandleLevelCompleted()
@@ -74,14 +78,13 @@ public class GameplayController : MonoBehaviour
         levelCompletePopup.Show();
     }
     
+    // Метод стал предельно простым
     public void LoadNextLevel()
     {
-        StartCoroutine(LoadSceneRoutine());
+        // Просто просим ScreenFader загрузить текущую сцену заново
+        ScreenFader.Instance.LoadSceneWithFade(SceneManager.GetActiveScene().buildIndex);
     }
 
-    private IEnumerator LoadSceneRoutine()
-    {
-        yield return StartCoroutine(screenFader.FadeOut());
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-    }
+    // Эта корутина больше не нужна
+    // private IEnumerator LoadSceneRoutine() { ... }
 }
