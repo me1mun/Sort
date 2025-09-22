@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: Item_CoffeePaper
   m_EditorClassIdentifier: 
   itemKey: CoffeePaper
-  icon: {fileID: 21300000, guid: 3332e9a10520aa541962687d94154e95, type: 3}
+  icon: {fileID: 21300000, guid: a250c8924eb11bb4b8dae8f1a0b87771, type: 3}

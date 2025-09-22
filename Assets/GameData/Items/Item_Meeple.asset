@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: Item_Meeple
   m_EditorClassIdentifier: 
   itemKey: Meeple
-  icon: {fileID: 21300000, guid: 46d1be9175e690846bf0cbecbc81ce8b, type: 3}
+  icon: {fileID: 21300000, guid: 47a498a9fefc57f4e962e99e744c3003, type: 3}

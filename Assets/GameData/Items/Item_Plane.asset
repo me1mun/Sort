@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: Item_Plane
   m_EditorClassIdentifier: 
   itemKey: Plane
-  icon: {fileID: 21300000, guid: 725b2f20d78f2ef44966cb7b78dc3a0a, type: 3}
+  icon: {fileID: 21300000, guid: a5fdd8bc352d4c94dbe33c3bf710e67e, type: 3}

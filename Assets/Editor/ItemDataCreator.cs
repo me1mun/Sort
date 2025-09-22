@@ -6,11 +6,10 @@ public static class ItemDataCreator
 {
     private const string OUTPUT_FOLDER_PATH = "Assets/GameData/Items";
 
-    // ИЗМЕНЕНИЕ: Добавили подменю "Creation"
     [MenuItem("My Tools/Creation/Create ItemData from Selected Icons")]
+    
     private static void CreateItemsFromIcons()
     {
-        // ... остальной код без изменений ...
         if (!Directory.Exists(OUTPUT_FOLDER_PATH))
         {
             Directory.CreateDirectory(OUTPUT_FOLDER_PATH);
@@ -23,7 +22,7 @@ public static class ItemDataCreator
             Debug.LogWarning("Не выбрано ни одного изображения (Texture2D). Выделите иконки в окне проекта.");
             return;
         }
-        
+
         EditorUtility.DisplayProgressBar("Creating Items", "Processing icons...", 0f);
 
         int createdCount = 0;
@@ -33,7 +32,7 @@ public static class ItemDataCreator
             string texturePath = AssetDatabase.GetAssetPath(texture);
 
             EditorUtility.DisplayProgressBar("Creating Items", $"Processing {texture.name}...", (float)i / selectedTextures.Length);
-            
+
             string filename = Path.GetFileNameWithoutExtension(texturePath);
             if (!filename.StartsWith("icon_"))
             {
@@ -42,8 +41,8 @@ public static class ItemDataCreator
             }
 
             string itemName = filename.Substring("icon_".Length);
-            
-            string itemKey = itemName; 
+
+            string itemKey = itemName;
             string assetName = "Item_" + itemName;
             string assetPath = Path.Combine(OUTPUT_FOLDER_PATH, $"{assetName}.asset");
 

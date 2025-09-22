@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: Item_Shorts
   m_EditorClassIdentifier: 
   itemKey: Shorts
-  icon: {fileID: 21300000, guid: 0ad5fa4d9a768d74ab63769c9199485b, type: 3}
+  icon: {fileID: 21300000, guid: 626536a495abcc1459c9f16ecc122bc7, type: 3}

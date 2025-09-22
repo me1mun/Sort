@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: Item_Hammer
   m_EditorClassIdentifier: 
   itemKey: Hammer
-  icon: {fileID: 21300000, guid: 1c69d35e14c209c4ca1f5fea7ba98444, type: 3}
+  icon: {fileID: 21300000, guid: adc58b0b8c5e1ce4496b58de03dca799, type: 3}

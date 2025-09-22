@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: Item_Showel
   m_EditorClassIdentifier: 
   itemKey: Showel
-  icon: {fileID: 21300000, guid: 7fe6a5567cd75404db4b49bc48f27bcd, type: 3}
+  icon: {fileID: 21300000, guid: f881d59381e307a42b4954cf0402500c, type: 3}

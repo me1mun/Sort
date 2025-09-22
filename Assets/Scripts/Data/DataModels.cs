@@ -3,12 +3,6 @@ using System.Collections.Generic;
 using UnityEngine;
 
 [Serializable]
-public class LevelData
-{
-    public List<GroupData> requiredGroups;
-}
-
-[Serializable]
 public class ProgressData
 {
     public int predefinedLevelIndex;

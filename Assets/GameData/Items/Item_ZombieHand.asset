@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: Item_ZombieHand
   m_EditorClassIdentifier: 
   itemKey: ZombieHand
-  icon: {fileID: 21300000, guid: 7d27d7c3ed28b8643b2872272ee78a2f, type: 3}
+  icon: {fileID: 21300000, guid: 4877eae9a7f2ce54da02caa28a2ed0ee, type: 3}

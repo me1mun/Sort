@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: Item_PaperPlane
   m_EditorClassIdentifier: 
   itemKey: PaperPlane
-  icon: {fileID: 21300000, guid: 25fef1c156a90514eba17f39a0e636d5, type: 3}
+  icon: {fileID: 21300000, guid: d0fb1db5c68477b4e9e7ab4da7248f0c, type: 3}

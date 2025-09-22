@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: Item_Shield
   m_EditorClassIdentifier: 
   itemKey: Shield
-  icon: {fileID: 21300000, guid: 65a78b193c5806a4db41a374874dd7ec, type: 3}
+  icon: {fileID: 21300000, guid: 54b05a4627939ea409b9af14f14aa2d8, type: 3}

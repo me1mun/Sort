@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: Item_Milk
   m_EditorClassIdentifier: 
   itemKey: Milk
-  icon: {fileID: 21300000, guid: 6081a53c0e469114c8ff239c1c8b89e5, type: 3}
+  icon: {fileID: 21300000, guid: cf61a890c3f48484cb969cc447ab6608, type: 3}

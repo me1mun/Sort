@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: Item_Nightstand
   m_EditorClassIdentifier: 
   itemKey: Nightstand
-  icon: {fileID: 21300000, guid: 58ec5207cfd37ee44b002616886c58ce, type: 3}
+  icon: {fileID: 21300000, guid: 06fb9a5650d96f247b5a633481c44ccd, type: 3}

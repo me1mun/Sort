@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: Item_Diamond
   m_EditorClassIdentifier: 
   itemKey: Diamond
-  icon: {fileID: 21300000, guid: fb74c8ca83034b542954a4cbceebb8bd, type: 3}
+  icon: {fileID: 21300000, guid: d8752161e8d75c2429faf0a652cc3342, type: 3}

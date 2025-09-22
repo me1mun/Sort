@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: Item_Cap
   m_EditorClassIdentifier: 
   itemKey: Cap
-  icon: {fileID: 21300000, guid: 966d42f5e22ec66478909e9ac5f5fc4e, type: 3}
+  icon: {fileID: 21300000, guid: 5ec4b292f902f9e4f8db6c073b1aa8e1, type: 3}

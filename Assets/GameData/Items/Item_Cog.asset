@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: Item_Cog
   m_EditorClassIdentifier: 
   itemKey: Cog
-  icon: {fileID: 21300000, guid: f860239e605591f499f316168ad22fec, type: 3}
+  icon: {fileID: 21300000, guid: 763a0624ce6f1e64ca4674dfb26e54a4, type: 3}

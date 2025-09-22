@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: Item_Letter
   m_EditorClassIdentifier: 
   itemKey: Letter
-  icon: {fileID: 21300000, guid: ac36b4e0382d73444b8cdf818d13e199, type: 3}
+  icon: {fileID: 21300000, guid: ff2879690fcda2743ba1e7f244b8f38a, type: 3}

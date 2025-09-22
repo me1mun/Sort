@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: Item_Armchair
   m_EditorClassIdentifier: 
   itemKey: Armchair
-  icon: {fileID: 21300000, guid: 5002b7479fdbe244da9ac422c6408b81, type: 3}
+  icon: {fileID: 21300000, guid: 9269315a0efb9b447b97dce7e073bec3, type: 3}

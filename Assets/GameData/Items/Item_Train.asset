@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: Item_Train
   m_EditorClassIdentifier: 
   itemKey: Train
-  icon: {fileID: 21300000, guid: 74ceb8b5b4b3b494e9d4419228060325, type: 3}
+  icon: {fileID: 21300000, guid: 7475c21f66c24e54a81bd3753fb2e71e, type: 3}

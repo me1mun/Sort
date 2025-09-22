@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: Item_Bow
   m_EditorClassIdentifier: 
   itemKey: Bow
-  icon: {fileID: 21300000, guid: fcee53fee36615b49bb230ebfc6a9568, type: 3}
+  icon: {fileID: 21300000, guid: 7cdc664d65a208d48bcdc0731518d7a6, type: 3}

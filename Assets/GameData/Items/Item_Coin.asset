@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: Item_Coin
   m_EditorClassIdentifier: 
   itemKey: Coin
-  icon: {fileID: 21300000, guid: c271c9579581c7945a804ea36c2ffd39, type: 3}
+  icon: {fileID: 21300000, guid: de0cf83b37dccd049a0be672d3c0c21d, type: 3}

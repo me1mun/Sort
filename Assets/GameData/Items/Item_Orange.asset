@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: Item_Orange
   m_EditorClassIdentifier: 
   itemKey: Orange
-  icon: {fileID: 21300000, guid: 11439076ff9b8a94489dc023aa9ec711, type: 3}
+  icon: {fileID: 21300000, guid: d6d3bed8032a1bf42850cf79b0254634, type: 3}

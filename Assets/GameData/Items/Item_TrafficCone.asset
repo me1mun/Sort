@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: Item_TrafficCone
   m_EditorClassIdentifier: 
   itemKey: TrafficCone
-  icon: {fileID: 21300000, guid: a3e3a316cca1075459d991bc99d92882, type: 3}
+  icon: {fileID: 21300000, guid: 60fc2040d222f5643870199096b253ae, type: 3}

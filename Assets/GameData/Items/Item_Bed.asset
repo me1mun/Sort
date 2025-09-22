@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: Item_Bed
   m_EditorClassIdentifier: 
   itemKey: Bed
-  icon: {fileID: 21300000, guid: 6cc384b53710bda459c991155b15daaa, type: 3}
+  icon: {fileID: 21300000, guid: 7d46ed5e49d87d14e9591db2096dd5f6, type: 3}

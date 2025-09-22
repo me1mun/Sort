@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: Item_PaperBox
   m_EditorClassIdentifier: 
   itemKey: PaperBox
-  icon: {fileID: 21300000, guid: cae82122c31ca3e469d686612d7b15ff, type: 3}
+  icon: {fileID: 21300000, guid: 83c1f377b5c7aa041a6fc965f73a1591, type: 3}

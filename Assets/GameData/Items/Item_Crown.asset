@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: Item_Crown
   m_EditorClassIdentifier: 
   itemKey: Crown
-  icon: {fileID: 21300000, guid: dd64edbad9497eb46b6623cbae9184f5, type: 3}
+  icon: {fileID: 21300000, guid: 43ad04ac7abc29b4d9ab36c3d71d947e, type: 3}

@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: Item_Heart
   m_EditorClassIdentifier: 
   itemKey: Heart
-  icon: {fileID: 21300000, guid: e3dd14b3f1215d04c97c64cc282cd3f0, type: 3}
+  icon: {fileID: 21300000, guid: 5769e87d411cf4d43a63b1999112fb30, type: 3}

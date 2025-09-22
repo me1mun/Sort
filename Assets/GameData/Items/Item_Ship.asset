@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: Item_Ship
   m_EditorClassIdentifier: 
   itemKey: Ship
-  icon: {fileID: 21300000, guid: bbbfa600466261d4386742055f0f78ad, type: 3}
+  icon: {fileID: 21300000, guid: f9cc20d371ecf124386335e63b35c52f, type: 3}

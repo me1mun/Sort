@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: Item_Suitcase
   m_EditorClassIdentifier: 
   itemKey: Suitcase
-  icon: {fileID: 21300000, guid: 3058672191703b74c8404b202dc865a5, type: 3}
+  icon: {fileID: 21300000, guid: fe5fef47e8b462f449e5fbc917e5b2e8, type: 3}

@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: Item_Box
   m_EditorClassIdentifier: 
   itemKey: Box
-  icon: {fileID: 21300000, guid: db7996fa03d98d644be96dcfbdf1ab8e, type: 3}
+  icon: {fileID: 21300000, guid: 77900312fa0dbdc4eb6d1f3e1e0ba4f3, type: 3}

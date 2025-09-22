@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: Item_Backpack
   m_EditorClassIdentifier: 
   itemKey: Backpack
-  icon: {fileID: 21300000, guid: 3e1b61177b108674f93cc36a9233ef48, type: 3}
+  icon: {fileID: 21300000, guid: 03aa61b4b1bac484fab48376b6b83cae, type: 3}

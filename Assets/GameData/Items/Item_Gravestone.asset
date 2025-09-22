@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: Item_Gravestone
   m_EditorClassIdentifier: 
   itemKey: Gravestone
-  icon: {fileID: 21300000, guid: 6a6c89733449138418b4c337ecf0b096, type: 3}
+  icon: {fileID: 21300000, guid: 961e23ce486084147af3b081d03161a5, type: 3}

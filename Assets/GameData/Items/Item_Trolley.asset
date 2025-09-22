@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: Item_Trolley
   m_EditorClassIdentifier: 
   itemKey: Trolley
-  icon: {fileID: 21300000, guid: 950b63ed9e0d03e47bc84e730c645988, type: 3}
+  icon: {fileID: 21300000, guid: a6b0a698e74b43c438ab1893a3b3893a, type: 3}

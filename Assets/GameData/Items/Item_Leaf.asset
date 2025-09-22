@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: Item_Leaf
   m_EditorClassIdentifier: 
   itemKey: Leaf
-  icon: {fileID: 21300000, guid: 909da87757be320449aa7bc50daa5e18, type: 3}
+  icon: {fileID: 21300000, guid: 2889f983ff3d7d94d9913a339ded4aa6, type: 3}

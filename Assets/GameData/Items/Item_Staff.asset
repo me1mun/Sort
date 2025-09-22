@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: Item_Staff
   m_EditorClassIdentifier: 
   itemKey: Staff
-  icon: {fileID: 21300000, guid: 78ad128a2b460174d8dd2efa6d014f8c, type: 3}
+  icon: {fileID: 21300000, guid: b1b9b36705fce4a4d8327c26f3ebe9e4, type: 3}

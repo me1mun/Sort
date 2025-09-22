@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: Item_Skull
   m_EditorClassIdentifier: 
   itemKey: Skull
-  icon: {fileID: 21300000, guid: 36d0fd0d5ea3d634d85873d038804104, type: 3}
+  icon: {fileID: 21300000, guid: ed28e0bc6c76600428f78ad1b9fad98e, type: 3}

@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: Item_Gift
   m_EditorClassIdentifier: 
   itemKey: Gift
-  icon: {fileID: 21300000, guid: 9828f42b37c01ae48b499963dc13c942, type: 3}
+  icon: {fileID: 21300000, guid: 443ff1e75b8e8424dbd200de41716b1e, type: 3}

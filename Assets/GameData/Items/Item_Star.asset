@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: Item_Star
   m_EditorClassIdentifier: 
   itemKey: Star
-  icon: {fileID: 21300000, guid: 0553e2bf57fee374691e70e90eaaa066, type: 3}
+  icon: {fileID: 21300000, guid: d915abffb7f1bfe4c983ab54ea9649b6, type: 3}

@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: Item_Blueberry
   m_EditorClassIdentifier: 
   itemKey: Blueberry
-  icon: {fileID: 21300000, guid: b03f4ec6c8eb79c40aa91b91946007c0, type: 3}
+  icon: {fileID: 21300000, guid: d518d44eff131b14d97ce8f2ff481cc1, type: 3}

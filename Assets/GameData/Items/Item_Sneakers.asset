@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: Item_Sneakers
   m_EditorClassIdentifier: 
   itemKey: Sneakers
-  icon: {fileID: 21300000, guid: 6674acbb88652d9479855de9c4e174df, type: 3}
+  icon: {fileID: 21300000, guid: 9fd058274add0c64fa3b88474c10e798, type: 3}

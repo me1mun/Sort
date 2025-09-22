@@ -19,14 +19,29 @@ public class LevelManager : MonoBehaviour
     
     private void LoadAllGroups()
     {
-        _loadedGroups = Resources.LoadAll<GroupData>("Groups").ToList();
+        var uniqueGroups = new HashSet<GroupData>();
+
+        foreach (var level in predefinedLevels)
+        {
+            if (level == null) continue;
+            foreach (var group in level.requiredGroups)
+            {
+                if (group != null)
+                {
+                    uniqueGroups.Add(group);
+                }
+            }
+        }
+
+        _loadedGroups = uniqueGroups.ToList();
+
         if (_loadedGroups.Count == 0)
         {
-            Debug.LogError("Не найдено ни одного GroupData ассета в папке 'Assets/Resources/Groups'. Уровни не могут быть сгенерированы.");
+            Debug.LogError("Не найдено ни одной группы в списке predefinedLevels. Случайные уровни не могут быть сгенерированы.");
         }
         else
         {
-            Debug.Log($"Загружено {_loadedGroups.Count} групп предметов.");
+            Debug.Log($"Загружено {_loadedGroups.Count} уникальных групп из готовых уровней.");
         }
     }
 
@@ -54,7 +69,9 @@ public class LevelManager : MonoBehaviour
         for (int i = 0; i < maxAttempts; i++)
         {
             var shuffledGroups = _loadedGroups.OrderBy(g => Random.value).ToList();
-            var newLevel = new LevelData { requiredGroups = new List<GroupData>() };
+            var newLevel = ScriptableObject.CreateInstance<LevelData>();
+            newLevel.requiredGroups = new List<GroupData>();
+            
             var usedItems = new HashSet<ItemData>();
 
             foreach (var group in shuffledGroups)
@@ -82,7 +99,7 @@ public class LevelManager : MonoBehaviour
     {
         foreach (var item in group.items)
         {
-            if (usedItems.Contains(item))
+            if (item != null && usedItems.Contains(item))
             {
                 return true;
             }

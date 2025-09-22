@@ -13,4 +13,4 @@ MonoBehaviour:
   m_Name: Item_Tent
   m_EditorClassIdentifier: 
   itemKey: Tent
-  icon: {fileID: 21300000, guid: 038c9ce2a02a58a4597b661e7b87bca7, type: 3}
+  icon: {fileID: 21300000, guid: df760b4475f4004408e384695c36f8bd, type: 3}
