@@ -82,18 +82,4 @@ public class DataManager : MonoBehaviour
         string json = JsonUtility.ToJson(Settings, true);
         File.WriteAllText(_settingsSavePath, json);
     }
-    
-    public void SetMusicVolume(int step)
-    {
-        Settings.musicVolume = step / 3.0f;
-        AudioManager.Instance.SetMusicVolume(Settings.musicVolume);
-        SaveSettings();
-    }
-    
-    public void SetSoundVolume(int step)
-    {
-        Settings.soundVolume = step / 3.0f;
-        AudioManager.Instance.SetSoundVolume(Settings.soundVolume);
-        SaveSettings();
-    }
 }

@@ -1,13 +1,20 @@
-using System.Collections.Generic;
 using UnityEngine;
-using TMPro; // Добавьте эту строку для работы с TextMeshPro
+using UnityEngine.UI;
+using TMPro;
+using System.Collections.Generic;
 
 public class UIController : MonoBehaviour
 {
-    [Header("References")]
+    [Header("Popups")]
+    [SerializeField] private SettingsPopup settingsPopup;
+
+    [Header("Buttons")]
+    [SerializeField] private Button openSettingsButton;
+
+    [Header("Indicators")]
     [SerializeField] private Transform groupIndicatorsContainer;
     [SerializeField] private UIGroupIndicator groupIndicatorPrefab;
-    [SerializeField] private TextMeshProUGUI levelText; // Новое поле для текста
+    [SerializeField] private TextMeshProUGUI levelText;
     
     private readonly List<UIGroupIndicator> _uiIndicators = new List<UIGroupIndicator>();
     private Camera _mainCamera;
@@ -15,9 +22,13 @@ public class UIController : MonoBehaviour
     private void Awake()
     {
         _mainCamera = Camera.main;
+        
+        if (openSettingsButton != null && settingsPopup != null)
+        {
+            openSettingsButton.onClick.AddListener(settingsPopup.Open);
+        }
     }
 
-    // Новый метод для обновления текста уровня
     public void UpdateLevelText(int levelNumber)
     {
         if (levelText != null)

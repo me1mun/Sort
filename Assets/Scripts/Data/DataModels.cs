@@ -26,15 +26,15 @@ public class ProgressData
 [Serializable]
 public class SettingsData
 {
-    public float musicVolume;
-    public float soundVolume;
+    public bool isMusicOn;
+    public bool isSfxOn;
     public string languageCode;
 
     public SettingsData()
     {
-        musicVolume = 0.75f;
-        soundVolume = 0.75f;
-        languageCode = null;
+        isMusicOn = true;
+        isSfxOn = true;
+        languageCode = "en";
     }
 }
 

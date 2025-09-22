@@ -1,6 +1,8 @@
 {
   "items": [
     { "key": "level_complete", "value": "Level Complete!" },
-    { "key": "continue", "value": "Continue" }
+    { "key": "continue", "value": "Continue" },
+    { "key": "music", "value": "Music" },
+    { "key": "sound", "value": "Sound" }
   ]
 }

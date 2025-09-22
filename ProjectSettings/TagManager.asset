@@ -44,5 +44,20 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: Gameplay
+    uniqueID: 4246173801
+    locked: 0
+  - name: Settings
+    uniqueID: 1553287377
+    locked: 0
+  - name: Gameplay_UI
+    uniqueID: 575410771
+    locked: 0
+  - name: Win
+    uniqueID: 1738701675
+    locked: 0
+  - name: ScreenFader
+    uniqueID: 2430860583
+    locked: 0
   m_RenderingLayers:
   - Default

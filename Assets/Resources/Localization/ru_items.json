@@ -1,0 +1,336 @@
+{
+    "items": [
+        {
+            "key": "Alarm",
+            "value": "Alarm"
+        },
+        {
+            "key": "Apple",
+            "value": "Apple"
+        },
+        {
+            "key": "Armchair",
+            "value": "Armchair"
+        },
+        {
+            "key": "Backpack",
+            "value": "Backpack"
+        },
+        {
+            "key": "Ball-football",
+            "value": "football"
+        },
+        {
+            "key": "Balloon",
+            "value": "Balloon"
+        },
+        {
+            "key": "Bed",
+            "value": "Bed"
+        },
+        {
+            "key": "Blueberry",
+            "value": "Blueberry"
+        },
+        {
+            "key": "Book",
+            "value": "Book"
+        },
+        {
+            "key": "Bow",
+            "value": "Bow"
+        },
+        {
+            "key": "Box",
+            "value": "Box"
+        },
+        {
+            "key": "Briefcase",
+            "value": "Briefcase"
+        },
+        {
+            "key": "Calendar",
+            "value": "Calendar"
+        },
+        {
+            "key": "Camera",
+            "value": "Camera"
+        },
+        {
+            "key": "Cap",
+            "value": "Cap"
+        },
+        {
+            "key": "Car",
+            "value": "Car"
+        },
+        {
+            "key": "Cards",
+            "value": "Cards"
+        },
+        {
+            "key": "Chest-gold",
+            "value": "Golden chest"
+        },
+        {
+            "key": "Chest-iron",
+            "value": "Iron chest"
+        },
+        {
+            "key": "Clover",
+            "value": "Clover"
+        },
+        {
+            "key": "Coctail-coconut",
+            "value": "Coconut coctail"
+        },
+        {
+            "key": "CoffeePaper",
+            "value": "Paper coffee cup"
+        },
+        {
+            "key": "Cog",
+            "value": "Cog"
+        },
+        {
+            "key": "Coin",
+            "value": "Coin"
+        },
+        {
+            "key": "CompactDisk",
+            "value": "Compact disk"
+        },
+        {
+            "key": "Crown",
+            "value": "Crown"
+        },
+        {
+            "key": "Diamond",
+            "value": "Diamond"
+        },
+        {
+            "key": "Dice-6",
+            "value": "Dice"
+        },
+        {
+            "key": "Energy",
+            "value": "Energy"
+        },
+        {
+            "key": "Fire",
+            "value": "Fire"
+        },
+        {
+            "key": "FlashDrive",
+            "value": "Flash drive"
+        },
+        {
+            "key": "FloppyDisk",
+            "value": "Floppy disk"
+        },
+        {
+            "key": "Gift",
+            "value": "Gift"
+        },
+        {
+            "key": "Gravestone",
+            "value": "Gravestone"
+        },
+        {
+            "key": "Hammer",
+            "value": "Hammer"
+        },
+        {
+            "key": "Handbag",
+            "value": "Handbag"
+        },
+        {
+            "key": "Heart",
+            "value": "Heart"
+        },
+        {
+            "key": "Horseshoe",
+            "value": "Horseshoe"
+        },
+        {
+            "key": "hourglass",
+            "value": "hourglass"
+        },
+        {
+            "key": "Juice",
+            "value": "Juice"
+        },
+        {
+            "key": "Knife",
+            "value": "Knife"
+        },
+        {
+            "key": "Lamp-camp",
+            "value": "Camping lamp"
+        },
+        {
+            "key": "Leaf",
+            "value": "Leaf"
+        },
+        {
+            "key": "Letter",
+            "value": "Letter"
+        },
+        {
+            "key": "Lightning",
+            "value": "Lightning"
+        },
+        {
+            "key": "Map",
+            "value": "Map"
+        },
+        {
+            "key": "Meeple",
+            "value": "Meeple"
+        },
+        {
+            "key": "Milk",
+            "value": "Milk"
+        },
+        {
+            "key": "Monitor",
+            "value": "Monitor"
+        },
+        {
+            "key": "Nightstand",
+            "value": "Nightstand"
+        },
+        {
+            "key": "Orange",
+            "value": "Orange"
+        },
+        {
+            "key": "Paper",
+            "value": "Paper"
+        },
+        {
+            "key": "PaperBox",
+            "value": "PaperBox"
+        },
+        {
+            "key": "PaperPlane",
+            "value": "Paper plane"
+        },
+        {
+            "key": "Paw-cat",
+            "value": "Paw"
+        },
+        {
+            "key": "Pawn",
+            "value": "Pawn"
+        },
+        {
+            "key": "Pen",
+            "value": "Pen"
+        },
+        {
+            "key": "Pickaxe",
+            "value": "Pickaxe"
+        },
+        {
+            "key": "Plane",
+            "value": "Plane"
+        },
+        {
+            "key": "Saw",
+            "value": "Saw"
+        },
+        {
+            "key": "Scissors",
+            "value": "Scissors"
+        },
+        {
+            "key": "SdCard",
+            "value": "SdCard"
+        },
+        {
+            "key": "Shield",
+            "value": "Shield"
+        },
+        {
+            "key": "Ship",
+            "value": "Ship"
+        },
+        {
+            "key": "Shorts",
+            "value": "Shorts"
+        },
+        {
+            "key": "Showel",
+            "value": "Showel"
+        },
+        {
+            "key": "Skull",
+            "value": "Skull"
+        },
+        {
+            "key": "SmartWatch",
+            "value": "Smart watch"
+        },
+        {
+            "key": "Sneakers",
+            "value": "Sneakers"
+        },
+        {
+            "key": "Staff",
+            "value": "Staff"
+        },
+        {
+            "key": "Star",
+            "value": "Star"
+        },
+        {
+            "key": "Suitcase",
+            "value": "Suitcase"
+        },
+        {
+            "key": "Sword",
+            "value": "Sword"
+        },
+        {
+            "key": "Table",
+            "value": "Table"
+        },
+        {
+            "key": "Tent",
+            "value": "Tent"
+        },
+        {
+            "key": "TrafficCone",
+            "value": "Traffic cone"
+        },
+        {
+            "key": "Train",
+            "value": "Train"
+        },
+        {
+            "key": "Trolley",
+            "value": "Trolley"
+        },
+        {
+            "key": "T-Shirt",
+            "value": "T-Shirt"
+        },
+        {
+            "key": "Water",
+            "value": "Water"
+        },
+        {
+            "key": "Watermelon",
+            "value": "Watermelon"
+        },
+        {
+            "key": "Whistle",
+            "value": "Whistle"
+        },
+        {
+            "key": "ZombieHand",
+            "value": "Zombie hand"
+        }
+    ]
+}

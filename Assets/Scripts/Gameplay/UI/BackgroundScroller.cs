@@ -58,6 +58,6 @@ public class BackgroundScroller : MonoBehaviour
         newUVRect.size = new Vector2(tileX, tileY);
         _image.uvRect = newUVRect;
         
-        Debug.Log($"Tiling updated: {tileX} x {tileY}");
+        //Debug.Log($"Tiling updated: {tileX} x {tileY}");
     }
 }

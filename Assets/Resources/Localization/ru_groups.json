@@ -1,0 +1,72 @@
+{
+    "items": [
+        {
+            "key": "Bags",
+            "value": "Bags"
+        },
+        {
+            "key": "Battle",
+            "value": "Battle"
+        },
+        {
+            "key": "Blades",
+            "value": "Blades"
+        },
+        {
+            "key": "BoardGames",
+            "value": "Board games"
+        },
+        {
+            "key": "Boxes",
+            "value": "Boxes"
+        },
+        {
+            "key": "Cemetery",
+            "value": "Cemetery"
+        },
+        {
+            "key": "Clothes",
+            "value": "Clothes"
+        },
+        {
+            "key": "Drinks",
+            "value": "Drinks"
+        },
+        {
+            "key": "Elements",
+            "value": "Elements"
+        },
+        {
+            "key": "Furniture",
+            "value": "Furniture"
+        },
+        {
+            "key": "Hike",
+            "value": "Hike"
+        },
+        {
+            "key": "Luck",
+            "value": "Luck"
+        },
+        {
+            "key": "Office",
+            "value": "Office"
+        },
+        {
+            "key": "StorageMedia",
+            "value": "Storage media"
+        },
+        {
+            "key": "Time",
+            "value": "Time"
+        },
+        {
+            "key": "Tourism",
+            "value": "Tourism"
+        },
+        {
+            "key": "Transport",
+            "value": "Transport"
+        }
+    ]
+}
