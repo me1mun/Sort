@@ -3,7 +3,6 @@ using UnityEngine.UI;
 
 public class SettingsPopup : MonoBehaviour
 {
-    [SerializeField] private GameObject popupRoot;
     [SerializeField] private Button closeButton;
 
     private BaseSettingUI[] _settings;
@@ -17,12 +16,13 @@ public class SettingsPopup : MonoBehaviour
         }
         
         closeButton.onClick.AddListener(Close);
-        popupRoot.SetActive(false);
+        //gameObject.SetActive(false);
     }
 
     public void Open()
     {
-        popupRoot.SetActive(true);
+        gameObject.SetActive(true);
+        //gameObject.SetActive(true);
         foreach (var setting in _settings)
         {
             setting.UpdateVisuals();
@@ -31,6 +31,6 @@ public class SettingsPopup : MonoBehaviour
 
     public void Close()
     {
-        popupRoot.SetActive(false);
+        gameObject.SetActive(false);
     }
 }

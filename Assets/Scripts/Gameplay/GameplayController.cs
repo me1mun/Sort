@@ -11,80 +11,77 @@ public class GameplayController : MonoBehaviour
     [SerializeField] private LevelManager levelManager;
     [SerializeField] private PropPool propPool;
 
-    [Header("UI Components")]
+    [Header("UI")]
     [SerializeField] private LevelCompletePopup levelCompletePopup;
-    // Удаляем ссылку на ScreenFader отсюда, он теперь глобальный
-    // [SerializeField] private ScreenFader screenFader; 
-    
+
     private ProgressData _currentProgress;
 
     private void Start()
     {
         DataManager.Instance.CachePredefinedLevelCount(levelManager.PredefinedLevelsCount);
-        
-        gridController.OnLevelCompleted += HandleLevelCompleted;
+        gridController.OnFinalVictory += OnFinalVictory;
         StartCoroutine(StartLevelRoutine());
     }
+    
+    private void OnDestroy()
+    {
+        if (gridController != null)
+        {
+             gridController.OnFinalVictory -= OnFinalVictory;
+        }
+    }
 
+    private void OnFinalVictory()
+    {
+        DataManager.Instance.AdvanceToNextLevel();
+        if (levelCompletePopup != null)
+        {
+            levelCompletePopup.Show(_currentProgress.DisplayLevel);
+        }
+    }
+    
+    public void LoadNextLevel()
+    {
+        ScreenFader.Instance.LoadSceneWithFade(SceneManager.GetActiveScene().buildIndex);
+    }
+    
     private IEnumerator StartLevelRoutine()
     {
-        levelCompletePopup.Hide();
-        // Мы больше не вызываем FadeIn отсюда, 
-        // так как он стал частью общего процесса загрузки сцены
-        
         _currentProgress = DataManager.Instance.Progress;
         int predefinedLevelsCount = levelManager.PredefinedLevelsCount;
-        
-        int levelToLoad;
-        if (_currentProgress.predefinedLevelIndex < predefinedLevelsCount)
-        {
-            levelToLoad = _currentProgress.predefinedLevelIndex + 1;
-        }
-        else
-        {
-            levelToLoad = predefinedLevelsCount + 1;
-        }
+        int levelToLoad = (_currentProgress.predefinedLevelIndex < predefinedLevelsCount)
+            ? _currentProgress.predefinedLevelIndex + 1
+            : predefinedLevelsCount + 1;
 
         LevelData originalLevelData = levelManager.GetLevel(levelToLoad);
-
         if (originalLevelData != null)
         {
-            bool isTutorial = (_currentProgress.predefinedLevelIndex == 0);
             LevelData activeLevelData = originalLevelData;
+            bool isTutorial = (_currentProgress.predefinedLevelIndex == 0);
 
             if (isTutorial)
             {
                 activeLevelData = new LevelData();
-                activeLevelData.requiredGroups = originalLevelData.requiredGroups.Take(3).ToList();
+                activeLevelData.requiredGroups = originalLevelData.requiredGroups
+                    .Take(3)
+                    .Select(g => 
+                    {
+                        var newGroup = ScriptableObject.CreateInstance<GroupData>();
+                        newGroup.groupKey = g.groupKey;
+                        newGroup.items = g.items.Take(3).ToList();
+                        return newGroup;
+                    })
+                    .ToList();
             }
             
             uiController.UpdateLevelText(_currentProgress.DisplayLevel);
-            
             uiController.InitializeUIForLevel(activeLevelData);
-            gridController.Initialize(activeLevelData, propPool, uiController, isTutorial);
+            gridController.Initialize(activeLevelData, propPool, uiController);
         }
         else
         {
-            Debug.LogError($"Failed to load level data for level {levelToLoad}! Check LevelManager configuration.");
+            Debug.LogError($"Failed to load level data for level {levelToLoad}!");
         }
-
-        // Возвращаем yield return null, так как анимация FadeIn теперь не здесь
         yield return null;
     }
-
-    private void HandleLevelCompleted()
-    {
-        DataManager.Instance.AdvanceToNextLevel();
-        levelCompletePopup.Show();
-    }
-    
-    // Метод стал предельно простым
-    public void LoadNextLevel()
-    {
-        // Просто просим ScreenFader загрузить текущую сцену заново
-        ScreenFader.Instance.LoadSceneWithFade(SceneManager.GetActiveScene().buildIndex);
-    }
-
-    // Эта корутина больше не нужна
-    // private IEnumerator LoadSceneRoutine() { ... }
 }

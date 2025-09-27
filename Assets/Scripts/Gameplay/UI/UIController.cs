@@ -9,7 +9,7 @@ public class UIController : MonoBehaviour
     [SerializeField] private SettingsPopup settingsPopup;
 
     [Header("Buttons")]
-    [SerializeField] private Button openSettingsButton;
+    [SerializeField] private UIButton openSettingsButton;
 
     [Header("Indicators")]
     [SerializeField] private Transform groupIndicatorsContainer;
@@ -22,11 +22,8 @@ public class UIController : MonoBehaviour
     private void Awake()
     {
         _mainCamera = Camera.main;
-        
-        if (openSettingsButton != null && settingsPopup != null)
-        {
-            openSettingsButton.onClick.AddListener(settingsPopup.Open);
-        }
+
+        openSettingsButton.OnClick.AddListener(settingsPopup.Open);
     }
 
     public void UpdateLevelText(int levelNumber)

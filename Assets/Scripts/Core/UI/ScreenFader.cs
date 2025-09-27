@@ -49,7 +49,7 @@ public class ScreenFader : MonoBehaviour
 
     private IEnumerator Fade(float targetAlpha, FadeSettings settings)
     {
-        canvasGroup.blocksRaycasts = true;
+        //canvasGroup.blocksRaycasts = true;
         float startAlpha = canvasGroup.alpha;
         float timer = 0f;
 
@@ -65,7 +65,7 @@ public class ScreenFader : MonoBehaviour
         }
 
         canvasGroup.alpha = targetAlpha;
-        canvasGroup.blocksRaycasts = (targetAlpha > 0);
+        //canvasGroup.blocksRaycasts = (targetAlpha > 0);
     }
 }
 

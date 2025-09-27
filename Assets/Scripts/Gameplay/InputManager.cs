@@ -4,8 +4,6 @@ using UnityEngine.InputSystem;
 
 public class InputManager : MonoBehaviour
 {
-    // Убираем static Instance. Теперь это обычный компонент.
-    
     public event Action<Vector2> OnDragStart;
     public event Action<Vector2> OnDrag;
     public event Action<Vector2> OnDragEnd;
@@ -14,17 +12,19 @@ public class InputManager : MonoBehaviour
     private InputAction _touchPressAction;
     private InputAction _touchPositionAction;
 
+    // Флаг для отслеживания состояния нажатия
+    private bool _isDragging = false;
+
     private void Awake()
     {
-        // Вся логика синглтона удалена.
-        // Просто находим камеру и создаем обработчики ввода.
         _mainCamera = Camera.main;
         
         _touchPressAction = new InputAction("TouchPress", binding: "<Pointer>/press");
         _touchPositionAction = new InputAction("TouchPosition", binding: "<Pointer>/position");
 
-        _touchPressAction.started += ctx => StartDrag();
-        _touchPressAction.canceled += ctx => EndDrag();
+        // Убираем подписку на события started и canceled, будем обрабатывать в Update
+        // _touchPressAction.started += ctx => StartDrag();
+        // _touchPressAction.canceled += ctx => EndDrag();
     }
 
     private void OnEnable()
@@ -35,14 +35,31 @@ public class InputManager : MonoBehaviour
 
     private void OnDisable()
     {
-        // OnDisable теперь тоже простой, без лишних проверок.
         _touchPressAction.Disable();
         _touchPositionAction.Disable();
     }
     
     private void Update()
     {
-        if (_touchPressAction.IsPressed() && _mainCamera != null)
+        if (_mainCamera == null) return;
+
+        bool isPressed = _touchPressAction.IsPressed();
+
+        // Проверяем начало нажатия
+        if (isPressed && !_isDragging)
+        {
+            StartDrag();
+            _isDragging = true;
+        }
+        // Проверяем окончание нажатия
+        else if (!isPressed && _isDragging)
+        {
+            EndDrag();
+            _isDragging = false;
+        }
+
+        // Если нажатие продолжается
+        if (_isDragging)
         {
             OnDrag?.Invoke(GetWorldPosition());
         }
@@ -50,13 +67,11 @@ public class InputManager : MonoBehaviour
 
     private void StartDrag()
     {
-        if (_mainCamera == null) return;
         OnDragStart?.Invoke(GetWorldPosition());
     }
 
     private void EndDrag()
     {
-        if (_mainCamera == null) return;
         OnDragEnd?.Invoke(GetWorldPosition());
     }
 
@@ -64,7 +79,6 @@ public class InputManager : MonoBehaviour
     {
         if (_mainCamera == null)
         {
-            // Если камера не найдена, пытаемся найти ее еще раз.
             _mainCamera = Camera.main;
             if (_mainCamera == null)
             {

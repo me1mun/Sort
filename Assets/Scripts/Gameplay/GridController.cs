@@ -7,17 +7,21 @@ using Random = UnityEngine.Random;
 
 public class GridController : MonoBehaviour
 {
-    public event Action OnLevelCompleted;
+    public event Action OnVictory;
+    public event Action OnFinalVictory;
 
     [Header("Grid Settings")]
-    private Vector2Int defaultGridSize = new Vector2Int(4, 5);
-    private Vector2Int tutorialGridSize = new Vector2Int(3, 3);
-    private float cellSize = 1.1f;
-    private float collectAnimationDelay = 0.05f;
+    [SerializeField] private float cellSize = 1.2f;
+    [SerializeField] private int maxGridHeight = 5;
 
+    [Header("Animation & Feel")]
+    [SerializeField] private float collectAnimationDelay = 0.05f;
+    [SerializeField] private float dragSmoothingSpeed = 20f;
+    
     [Header("Component References")]
     [SerializeField] private InputManager inputManager;
-    
+    [SerializeField] private ParticleSystem victoryParticles;
+
     private PropPool _propPool;
     private UIController _uiController;
     private GridManager _gridManager;
@@ -27,258 +31,38 @@ public class GridController : MonoBehaviour
     private bool _isBusy = false;
     private int _groupsCollectedCount = 0;
     private bool _isLevelCompleted = false;
+    private int _totalGroupsInLevel = 0;
     
     private int _width;
     private int _height;
 
-    public void Initialize(LevelData levelData, PropPool pool, UIController uiController, bool isTutorial)
+    private void OnEnable() => SubscribeToInput();
+    private void OnDisable() => UnsubscribeFromInput();
+
+    public void Initialize(LevelData levelData, PropPool pool, UIController uiController)
     {
         _propPool = pool;
         _uiController = uiController;
         
-        if (isTutorial)
-        {
-            _width = tutorialGridSize.x;
-            _height = tutorialGridSize.y;
-        }
-        else
-        {
-            _width = defaultGridSize.x;
-            _height = defaultGridSize.y;
-        }
+        _height = Mathf.Min(levelData.requiredGroups.Count, maxGridHeight);
+        _width = levelData.requiredGroups.Any() ? levelData.requiredGroups.Max(g => g.items.Count) : 0;
         
         _gridManager = new GridManager(_width, _height);
         _isLevelCompleted = false;
         _groupsCollectedCount = 0;
+        _totalGroupsInLevel = levelData.requiredGroups.Count;
         
         CalculateGridOffset();
-        PrepareSpawnQueue(levelData, isTutorial);
+        PrepareSpawnQueue(levelData);
         
-        SubscribeToInput();
-        StartCoroutine(GenerateInitialField());
+        StartCoroutine(PopulateInitialField());
     }
     
-    private void PrepareSpawnQueue(LevelData levelData, bool isTutorial)
-    {
-        if (isTutorial)
-        {
-            PrepareTutorialSpawnQueue(levelData);
-            return; 
-        }
-        
-        var itemsForInitialGrid = new List<ItemSpawnInfo>();
-        var remainingQueueItems = new List<ItemSpawnInfo>();
+    #region Input Handling
 
-        if (levelData.requiredGroups.Count < 2)
-        {
-            Debug.LogWarning("В уровне меньше 2 групп, используется стандартное перемешивание.");
-            var allItems = levelData.requiredGroups
-                .SelectMany(group => group.items.Select(item => new ItemSpawnInfo(group, item)))
-                .OrderBy(x => Random.value)
-                .ToList();
-            _spawnQueue = new Queue<ItemSpawnInfo>(allItems);
-            return;
-        }
-
-        var shuffledGroups = levelData.requiredGroups.OrderBy(x => Random.value).ToList();
-        var guaranteedGroups = shuffledGroups.Take(2).ToList();
-        var otherGroups = shuffledGroups.Skip(2).ToList();
-
-        foreach (var group in guaranteedGroups)
-        {
-            foreach (var item in group.items)
-            {
-                itemsForInitialGrid.Add(new ItemSpawnInfo(group, item));
-            }
-        }
-
-        foreach (var group in otherGroups)
-        {
-            if (group.items.Count > 0)
-            {
-                var tempItemsInGroup = new List<ItemData>(group.items);
-                int randomIndex = Random.Range(0, tempItemsInGroup.Count);
-                ItemData randomItem = tempItemsInGroup[randomIndex];
-                itemsForInitialGrid.Add(new ItemSpawnInfo(group, randomItem));
-                tempItemsInGroup.RemoveAt(randomIndex);
-                foreach (var item in tempItemsInGroup)
-                {
-                    remainingQueueItems.Add(new ItemSpawnInfo(group, item));
-                }
-            }
-        }
-
-        itemsForInitialGrid = itemsForInitialGrid.OrderBy(x => Random.value).ToList();
-        remainingQueueItems = remainingQueueItems.OrderBy(x => Random.value).ToList();
-
-        _spawnQueue = new Queue<ItemSpawnInfo>(itemsForInitialGrid.Concat(remainingQueueItems));
-    }
-
-    private void PrepareTutorialSpawnQueue(LevelData levelData)
-    {
-        var tutorialItems = new List<ItemSpawnInfo>();
-
-        var tutorialGroups = levelData.requiredGroups.Take(3).ToList();
-
-        foreach (var group in tutorialGroups)
-        {
-            var itemsInGroup = group.items.Take(3);
-            foreach (var item in itemsInGroup)
-            {
-                tutorialItems.Add(new ItemSpawnInfo(group, item));
-            }
-        }
-
-        int expectedItemCount = _width * _height;
-        if (tutorialItems.Count != expectedItemCount)
-        {
-            Debug.LogError($"Ошибка конфигурации туториала! Ожидалось {expectedItemCount} предметов, но было найдено {tutorialItems.Count}. " +
-                           $"Убедитесь, что для Уровня 1 назначено минимум 3 группы, и в каждой из них есть минимум 3 предмета.");
-        }
-        
-        var shuffledItems = tutorialItems.OrderBy(x => Random.value).ToList();
-        _spawnQueue = new Queue<ItemSpawnInfo>(shuffledItems);
-    }
-
-    private IEnumerator ClearRows(List<int> rows)
-    {
-        List<Coroutine> flyingCoroutines = new List<Coroutine>();
-        
-        foreach (int y in rows)
-        {
-            PropView firstProp = _gridManager.GetPropAt(0, y);
-            if(firstProp == null) continue;
-
-            GroupData collectedGroup = firstProp.AssignedGroup;
-            string translatedGroupName = LocalizationManager.Instance.GetTranslation(collectedGroup.groupKey, TranslationGroup.Groups);
-            Debug.Log($"Group collected: {translatedGroupName}");
-
-            AudioManager.Instance.Play("Score");
-
-            int targetIndicatorIndex = _groupsCollectedCount;
-            
-            Vector3 targetPos = _uiController.GetIndicatorWorldPosition(targetIndicatorIndex);
-
-            for (int x = 0; x < _width; x++)
-            {
-                PropView prop = _gridManager.GetPropAt(x, y);
-                if (prop != null)
-                {
-                    _gridManager.ClearCell(x, y);
-
-                    Coroutine flyCoroutine = StartCoroutine(prop.AnimateFlyAndCollect(targetPos, () => {
-                        _uiController.FillIndicator(targetIndicatorIndex);
-                        _propPool.Return(prop);
-                    }));
-                    flyingCoroutines.Add(flyCoroutine);
-                    
-                    yield return new WaitForSeconds(0.1f);
-                }
-            }
-
-            _groupsCollectedCount++;
-        }
-
-        foreach (var coroutine in flyingCoroutines)
-        {
-            yield return coroutine;
-        }
-    }
-    
-    private void OnDestroy() => UnsubscribeFromInput();
-
-    private IEnumerator SwapProps(PropView propA, PropView propB)
-    {
-        _isBusy = true;
-
-        AudioManager.Instance.Play("Swap");
-        
-        Vector2Int posA = propA.GridPosition;
-        Vector2Int posB = propB.GridPosition;
-        
-        _gridManager.SwapProps(posA, posB);
-        
-        Coroutine moveA = StartCoroutine(propA.AnimateMove(GetWorldPosition(posB.x, posB.y)));
-        Coroutine moveB = StartCoroutine(propB.AnimateMove(GetWorldPosition(posA.x, posA.y)));
-        yield return moveA;
-        yield return moveB;
-        
-        yield return StartCoroutine(CheckMatchesAndRefill());
-    }
-    
-    private IEnumerator CheckMatchesAndRefill()
-    {
-        _isBusy = true;
-        List<int> completedRows = _gridManager.GetCompletedRows();
-
-        if (completedRows.Count > 0)
-        {
-            yield return ClearRows(completedRows);
-            yield return CollapseColumns();
-            yield return RefillGrid();
-            yield return StartCoroutine(CheckMatchesAndRefill()); 
-        }
-        else
-        {
-            if (!_isLevelCompleted && _spawnQueue.Count == 0 && _gridManager.IsGridEmpty())
-            {
-                _isLevelCompleted = true; 
-                OnLevelCompleted?.Invoke();
-            }
-            
-            _isBusy = false;
-        }
-    }
-
-    private IEnumerator CollapseColumns()
-    {
-        List<Coroutine> moveCoroutines = new List<Coroutine>();
-        for (int x = 0; x < _width; x++)
-        {
-            int emptySpaces = 0;
-            for (int y = 0; y < _height; y++)
-            {
-                if (_gridManager.GetPropAt(x, y) == null) { emptySpaces++; }
-                else if (emptySpaces > 0)
-                {
-                    PropView prop = _gridManager.GetPropAt(x, y);
-                    Vector2Int newPos = new Vector2Int(x, y - emptySpaces);
-                    
-                    _gridManager.SetPropAt(x, y, null);
-                    _gridManager.SetPropAt(newPos.x, newPos.y, prop);
-                    
-                    prop.GridPosition = newPos;
-                    moveCoroutines.Add(StartCoroutine(prop.AnimateMove(GetWorldPosition(newPos.x, newPos.y))));
-                }
-            }
-        }
-        foreach(var coro in moveCoroutines) { yield return coro; }
-        yield return new WaitUntil(()=> _gridManager.IsGridIdle());
-    }
-
-    private IEnumerator RefillGrid()
-    {
-        for (int x = 0; x < _width; x++)
-        {
-            for (int y = 0; y < _height; y++)
-            {
-                if (_gridManager.GetPropAt(x, y) == null && _spawnQueue.Count > 0)
-                {
-                    var newProp = CreatePropAt(x, y, _spawnQueue.Dequeue(), true);
-                    StartCoroutine(newProp.AnimateMove(GetWorldPosition(x,y)));
-                }
-            }
-        }
-        yield return new WaitUntil(() => _gridManager.IsGridIdle());
-    }
-    
     private void SubscribeToInput()
     {
-        if (inputManager == null) 
-        {
-            Debug.LogError("InputManager не назначен в инспекторе GridController!");
-            return;
-        }
+        if (inputManager == null) return;
         inputManager.OnDragStart += OnDragStart;
         inputManager.OnDrag += OnDrag;
         inputManager.OnDragEnd += OnDragEnd;
@@ -292,35 +76,6 @@ public class GridController : MonoBehaviour
         inputManager.OnDragEnd -= OnDragEnd;
     }
 
-    #region Unchanged Code
-    
-    private void CalculateGridOffset()
-    {
-        float totalGridWidth = (_width - 1) * cellSize;
-        float totalGridHeight = (_height - 1) * cellSize;
-        _gridOffset = new Vector2(-totalGridWidth / 2f, -totalGridHeight / 2f);
-    }
-    
-    private IEnumerator GenerateInitialField()
-    {
-        _isBusy = true;
-        for (int y = 0; y < _height; y++)
-        {
-            for (int x = 0; x < _width; x++)
-            {
-                if (_spawnQueue.Count > 0)
-                {
-                    var newProp = CreatePropAt(x, y, _spawnQueue.Dequeue());
-                    StartCoroutine(newProp.AnimateMove(GetWorldPosition(x,y)));
-                }
-            }
-             yield return new WaitForSeconds(0.05f); 
-        }
-        
-        yield return new WaitUntil(() => _gridManager.IsGridIdle());
-        _isBusy = false;
-    }
-    
     private void OnDragStart(Vector2 worldPos)
     {
         if (_isBusy) return;
@@ -330,7 +85,6 @@ public class GridController : MonoBehaviour
         {
             _draggedProp = prop;
             _draggedProp.Select(true);
-
             AudioManager.Instance.Play("Tap");
         }
     }
@@ -338,42 +92,272 @@ public class GridController : MonoBehaviour
     private void OnDrag(Vector2 worldPos)
     {
         if (_draggedProp == null) return;
-        Vector3 draggedPosition = new Vector3(worldPos.x, worldPos.y, -1);
-        _draggedProp.transform.position = draggedPosition;
+        
+        Vector3 targetPosition = new Vector3(worldPos.x, worldPos.y, _draggedProp.transform.position.z);
+        _draggedProp.transform.position = Vector3.Lerp(_draggedProp.transform.position, targetPosition, Time.deltaTime * dragSmoothingSpeed);
     }
 
     private void OnDragEnd(Vector2 worldPos)
     {
         if (_draggedProp == null) return;
-
+        
         _draggedProp.Select(false);
-        
-        Vector2Int startPos = _draggedProp.GridPosition;
-        Vector2Int endPos = GetGridPositionFromWorld(worldPos);
-        
-        if (_gridManager.IsWithinBounds(endPos.x, endPos.y) && endPos != startPos)
+        Vector2Int dropPosition = GetGridPositionFromWorld(worldPos);
+        HandleDropAt(dropPosition);
+        _draggedProp = null;
+    }
+
+    private void HandleDropAt(Vector2Int dropPosition)
+    {
+        Vector2Int startPosition = _draggedProp.GridPosition;
+
+        bool isValidDrop = _gridManager.IsWithinBounds(dropPosition.x, dropPosition.y) && dropPosition != startPosition;
+
+        if (isValidDrop)
         {
-            PropView targetProp = _gridManager.GetPropAt(endPos.x, endPos.y);
-            if (targetProp != null && !targetProp.IsAnimating)
-            {
-                StartCoroutine(SwapProps(_draggedProp, targetProp));
-            }
-            else
-            {
-                StartCoroutine(_draggedProp.AnimateMove(GetWorldPosition(startPos.x, startPos.y)));
-            }
+            PropView targetProp = _gridManager.GetPropAt(dropPosition.x, dropPosition.y);
+            StartCoroutine(SwapPropsRoutine(_draggedProp, targetProp));
         }
         else
         {
-            StartCoroutine(_draggedProp.AnimateMove(GetWorldPosition(startPos.x, startPos.y)));
+            StartCoroutine(_draggedProp.AnimateMove(GetWorldPosition(startPosition.x, startPosition.y)));
+        }
+    }
+
+    #endregion
+
+    #region Game Flow Coroutines
+
+    private IEnumerator PopulateInitialField()
+    {
+        _isBusy = true;
+        var spawnCoroutines = new List<Coroutine>();
+        for (int y = 0; y < _height; y++)
+        {
+            for (int x = 0; x < _width; x++)
+            {
+                if (_spawnQueue.Count > 0)
+                {
+                    var prop = CreatePropAt(x, y, _spawnQueue.Dequeue());
+                    spawnCoroutines.Add(StartCoroutine(prop.AnimateMove(GetWorldPosition(x,y))));
+                }
+            }
         }
         
-        _draggedProp = null;
+        foreach (var coro in spawnCoroutines) yield return coro;
+        
+        _isBusy = false;
+    }
+
+    private IEnumerator SwapPropsRoutine(PropView propA, PropView propB)
+    {
+        _isBusy = true;
+        
+        if (propB == null)
+        {
+            StartCoroutine(propA.AnimateMove(GetWorldPosition(propA.GridPosition.x, propA.GridPosition.y)));
+            _isBusy = false;
+            yield break;
+        }
+
+        AudioManager.Instance.Play("Swap");
+        
+        Vector2Int posA = propA.GridPosition;
+        Vector2Int posB = propB.GridPosition;
+        
+        _gridManager.SwapProps(posA, posB);
+        
+        var moveA = StartCoroutine(propA.AnimateMove(GetWorldPosition(posB.x, posB.y)));
+        var moveB = StartCoroutine(propB.AnimateMove(GetWorldPosition(posA.x, posA.y)));
+        yield return moveA;
+        yield return moveB;
+        
+        yield return StartCoroutine(CheckMatchesAndRefill());
+    }
+
+    private IEnumerator CheckMatchesAndRefill()
+    {
+        _isBusy = true;
+        List<int> completedRows = _gridManager.GetCompletedRows();
+
+        if (completedRows.Any())
+        {
+            yield return ClearRowsRoutine(completedRows);
+            yield return CollapseAndRefillRoutine();
+            yield return StartCoroutine(CheckMatchesAndRefill()); 
+        }
+        else
+        {
+            if (!_isLevelCompleted && _spawnQueue.Count == 0 && _gridManager.IsGridEmpty())
+            {
+                _isLevelCompleted = true; 
+                OnFinalVictory?.Invoke();
+            }
+            _isBusy = false;
+        }
+    }
+
+    private IEnumerator ClearRowsRoutine(List<int> rows)
+    {
+        var flyingCoroutines = new List<Coroutine>();
+        
+        foreach (int y in rows)
+        {
+            _groupsCollectedCount++;
+            
+            if (_groupsCollectedCount == _totalGroupsInLevel)
+            {
+                OnVictory?.Invoke();
+                if (victoryParticles != null) victoryParticles.Play();
+            }
+            
+            PropView firstProp = _gridManager.GetPropAt(0, y);
+            AudioManager.Instance.Play("Score");
+            int targetIndicatorIndex = _groupsCollectedCount - 1;
+            Vector3 targetPos = _uiController.GetIndicatorWorldPosition(targetIndicatorIndex);
+            
+            for (int x = 0; x < _width; x++)
+            {
+                PropView prop = _gridManager.GetPropAt(x, y);
+                if (prop != null)
+                {
+                    _gridManager.ClearCell(x, y);
+                    Coroutine flyCoroutine = StartCoroutine(prop.AnimateFlyAndCollect(targetPos, () => {
+                        _uiController.FillIndicator(targetIndicatorIndex);
+                        _propPool.Return(prop);
+                    }));
+                    flyingCoroutines.Add(flyCoroutine);
+                    yield return new WaitForSeconds(collectAnimationDelay);
+                }
+            }
+        }
+
+        foreach (var coroutine in flyingCoroutines) yield return coroutine;
+    }
+
+    private IEnumerator CollapseAndRefillRoutine()
+    {
+        var moveCoroutines = new List<Coroutine>();
+        
+        // --- Этап 1: Смещение существующих предметов ---
+        for (int x = 0; x < _width; x++)
+        {
+            int emptySpaces = 0;
+            for (int y = 0; y < _height; y++)
+            {
+                if (_gridManager.GetPropAt(x, y) == null)
+                {
+                    emptySpaces++;
+                }
+                else if (emptySpaces > 0)
+                {
+                    PropView prop = _gridManager.GetPropAt(x, y);
+                    Vector2Int newPos = new Vector2Int(x, y - emptySpaces);
+                    _gridManager.SetPropAt(x, y, null);
+                    _gridManager.SetPropAt(newPos.x, newPos.y, prop);
+                    prop.GridPosition = newPos;
+                    moveCoroutines.Add(StartCoroutine(prop.AnimateMove(GetWorldPosition(newPos.x, newPos.y))));
+                }
+            }
+        }
+        
+        foreach(var coro in moveCoroutines) yield return coro;
+        moveCoroutines.Clear();
+
+        // --- Этап 2: Пополнение новыми предметами ---
+        for (int x = 0; x < _width; x++)
+        {
+            for (int y = 0; y < _height; y++)
+            {
+                if (_gridManager.GetPropAt(x, y) == null && _spawnQueue.Any())
+                {
+                    var newProp = CreatePropAt(x, y, _spawnQueue.Dequeue(), true);
+                    moveCoroutines.Add(StartCoroutine(newProp.AnimateMove(GetWorldPosition(x,y))));
+                }
+            }
+        }
+        
+        foreach(var coro in moveCoroutines) yield return coro;
     }
     
+    #endregion
+    
+    #region Helper Methods
+    
+    private void PrepareSpawnQueue(LevelData levelData)
+    {
+        if (!levelData.requiredGroups.Any())
+        {
+            _spawnQueue = new Queue<ItemSpawnInfo>();
+            return;
+        }
+
+        var allItemsForLevel = new List<ItemSpawnInfo>();
+        foreach (var group in levelData.requiredGroups)
+        {
+            if (!group.items.Any()) continue;
+            for(int i = 0; i < _width; i++)
+            {
+                allItemsForLevel.Add(new ItemSpawnInfo(group, group.items[i % group.items.Count]));
+            }
+        }
+
+        if (levelData.requiredGroups.Count < 2)
+        {
+            _spawnQueue = new Queue<ItemSpawnInfo>(allItemsForLevel.OrderBy(x => Random.value));
+            return;
+        }
+
+        var itemsForInitialGrid = new List<ItemSpawnInfo>();
+        var shuffledGroups = levelData.requiredGroups.OrderBy(x => Random.value).ToList();
+        var guaranteedGroups = shuffledGroups.Take(2).ToList();
+        var otherGroups = shuffledGroups.Skip(2).ToList();
+
+        foreach (var group in guaranteedGroups)
+        {
+            if (!group.items.Any()) continue;
+            for (int i = 0; i < _width; i++)
+            {
+                 itemsForInitialGrid.Add(new ItemSpawnInfo(group, group.items[i % group.items.Count]));
+            }
+        }
+
+        foreach (var group in otherGroups)
+        {
+            if (group.items.Any())
+            {
+                var item = group.items[Random.Range(0, group.items.Count)];
+                itemsForInitialGrid.Add(new ItemSpawnInfo(group, item));
+            }
+        }
+        
+        var initialGridCounts = itemsForInitialGrid.GroupBy(i => i.Item).ToDictionary(g => g.Key, g => g.Count());
+        var totalCounts = allItemsForLevel.GroupBy(i => i.Item).ToDictionary(g => g.Key, g => g.Count());
+        var remainingQueueItems = new List<ItemSpawnInfo>();
+
+        foreach (var pair in totalCounts)
+        {
+            int inInitial = initialGridCounts.ContainsKey(pair.Key) ? initialGridCounts[pair.Key] : 0;
+            int remaining = pair.Value - inInitial;
+            for (int i = 0; i < remaining; i++)
+            {
+                remainingQueueItems.Add(allItemsForLevel.First(itemInfo => itemInfo.Item == pair.Key));
+            }
+        }
+
+        _spawnQueue = new Queue<ItemSpawnInfo>(itemsForInitialGrid.OrderBy(x => Random.value).Concat(remainingQueueItems.OrderBy(x => Random.value)));
+    }
+    
+    private void CalculateGridOffset()
+    {
+        float totalGridWidth = (_width - 1) * cellSize;
+        float totalGridHeight = (_height - 1) * cellSize;
+        _gridOffset = new Vector2(-totalGridWidth / 2f, -totalGridHeight / 2f);
+    }
+
     private PropView CreatePropAt(int x, int y, ItemSpawnInfo itemInfo, bool spawnAtTop = false)
     {
-        Vector3 startPosition = spawnAtTop ? GetWorldPosition(x, _height) : GetWorldPosition(x, y);
+        Vector3 startPosition = spawnAtTop ? GetWorldPosition(x, _height) : GetWorldPosition(x,y);
         PropView prop = _propPool.Get();
         prop.transform.position = startPosition;
         prop.Initialize(itemInfo.Group, itemInfo.Item, new Vector2Int(x, y));
