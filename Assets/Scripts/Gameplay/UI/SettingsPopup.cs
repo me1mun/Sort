@@ -3,7 +3,7 @@ using UnityEngine.UI;
 
 public class SettingsPopup : MonoBehaviour
 {
-    [SerializeField] private Button closeButton;
+    [SerializeField] private UIButton closeButton;
 
     private BaseSettingUI[] _settings;
 
@@ -12,17 +12,27 @@ public class SettingsPopup : MonoBehaviour
         _settings = GetComponentsInChildren<BaseSettingUI>(true);
         foreach (var setting in _settings)
         {
-            setting.Initialize(DataManager.Instance);
+            setting.Initialize(SettingsManager.Instance);
         }
         
-        closeButton.onClick.AddListener(Close);
+        if (closeButton != null)
+        {
+            closeButton.OnClick.AddListener(Close);
+        }
         //gameObject.SetActive(false);
+    }
+
+    private void OnDestroy()
+    {
+        if (closeButton != null)
+        {
+            closeButton.OnClick.RemoveListener(Close);
+        }
     }
 
     public void Open()
     {
         gameObject.SetActive(true);
-        //gameObject.SetActive(true);
         foreach (var setting in _settings)
         {
             setting.UpdateVisuals();
@@ -31,6 +41,10 @@ public class SettingsPopup : MonoBehaviour
 
     public void Close()
     {
+        if (SettingsManager.Instance != null)
+        {
+            SettingsManager.Instance.SaveSettings();
+        }
         gameObject.SetActive(false);
     }
 }

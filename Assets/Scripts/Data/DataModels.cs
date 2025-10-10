@@ -31,16 +31,3 @@ public class SettingsData
         languageCode = "en";
     }
 }
-
-[Serializable]
-public class LocalizationData
-{
-    public List<LocalizationItem> items;
-}
-
-[Serializable]
-public class LocalizationItem
-{
-    public string key;
-    public string value;
-}

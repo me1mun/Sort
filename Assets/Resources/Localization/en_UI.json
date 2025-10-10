@@ -1,9 +1,0 @@
-{
-  "items": [
-    { "key": "level_complete", "value": "Level Complete!" },
-    { "key": "continue", "value": "Continue" },
-    { "key": "settings", "value": "Settings" },
-    { "key": "music", "value": "Music" },
-    { "key": "sound", "value": "Sound" }
-  ]
-}

@@ -6,7 +6,7 @@ public class BackgroundScroller : MonoBehaviour
 {
     private Vector2 scrollSpeed = new Vector2(0.03f, 0.04f);
 
-    private float verticalTiles = 12f;
+    private float verticalTiles = 6f;
 
     private RawImage _image;
     private int _lastScreenWidth = 0;
@@ -15,7 +15,7 @@ public class BackgroundScroller : MonoBehaviour
     private void Start()
     {
         _image = GetComponent<RawImage>();
-        // Первоначальная настройка тайлинга
+        verticalTiles = _image.uvRect.height;
         UpdateTiling();
     }
 

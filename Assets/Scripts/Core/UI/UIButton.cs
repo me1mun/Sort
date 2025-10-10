@@ -1,32 +1,26 @@
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
-using UnityEngine.UI;
 
-public class UIButton : MonoBehaviour, IPointerClickHandler, IPointerDownHandler, IPointerUpHandler
+public class UIButton : MonoBehaviour, IPointerClickHandler, IPointerDownHandler
 {
     [Header("Actions")]
     public UnityEvent OnClick;
-
-    private void Awake()
-    {
-        
-    }
+    
+    [Header("Feedback")]
+    [SerializeField] private bool playSoundOnClick = true;
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        Debug.Log("click");
         OnClick.Invoke();
     }
 
     public void OnPointerDown(PointerEventData eventData)
     {
-        AudioManager.Instance.Play("Tap");      
+        if (playSoundOnClick)
+        {
+            AudioManager.Instance.Play("Tap");
+            //Debug.Log("click sound play");
+        }
     }
-
-    public void OnPointerUp(PointerEventData eventData)
-    {
-
-    }
-
 }

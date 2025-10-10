@@ -1,0 +1,128 @@
+{
+    "items": [
+        {
+            "key": "groups.Bags",
+            "value": "Сумки"
+        },
+        {
+            "key": "groups.Battle",
+            "value": "Битва"
+        },
+        {
+            "key": "groups.Beach",
+            "value": "Пляж"
+        },
+        {
+            "key": "groups.Birthday",
+            "value": "День рождения"
+        },
+        {
+            "key": "groups.Blades",
+            "value": "Лезвия"
+        },
+        {
+            "key": "groups.BoardGames",
+            "value": "Настольные игры"
+        },
+        {
+            "key": "groups.Boxes",
+            "value": "Ящики"
+        },
+        {
+            "key": "groups.Boxing",
+            "value": "Бокс"
+        },
+        {
+            "key": "groups.Cemetery",
+            "value": "Кладбище"
+        },
+        {
+            "key": "groups.Clothes",
+            "value": "Одежда"
+        },
+        {
+            "key": "groups.Drinks",
+            "value": "Напитки"
+        },
+        {
+            "key": "groups.Elements",
+            "value": "Стихии"
+        },
+        {
+            "key": "groups.FastFood",
+            "value": "Фастфуд"
+        },
+        {
+            "key": "groups.Fly",
+            "value": "Полет"
+        },
+        {
+            "key": "groups.Forest",
+            "value": "Лес"
+        },
+        {
+            "key": "groups.Furniture",
+            "value": "Мебель"
+        },
+        {
+            "key": "groups.Hike",
+            "value": "Поход"
+        },
+        {
+            "key": "groups.Luck",
+            "value": "Удача"
+        },
+        {
+            "key": "groups.Medicine",
+            "value": "Медицина"
+        },
+        {
+            "key": "groups.Money",
+            "value": "Деньги"
+        },
+        {
+            "key": "groups.Office",
+            "value": "Офис"
+        },
+        {
+            "key": "groups.Police",
+            "value": "Полиция"
+        },
+        {
+            "key": "groups.StorageMedia",
+            "value": "Носители информации"
+        },
+        {
+            "key": "groups.Time",
+            "value": "Время"
+        },
+        {
+            "key": "groups.Tourism",
+            "value": "Туризм"
+        },
+        {
+            "key": "groups.Transport",
+            "value": "Транспорт"
+        },
+        {
+            "key": "groups.Witch",
+            "value": "Ведьма"
+        },
+        {
+            "key": "ui.level",
+            "value": "Уровень"
+        },
+        {
+            "key": "ui.levelComplete",
+            "value": "Уровень пройден!"
+        },
+        {
+            "key": "ui.settings",
+            "value": "Настройки"
+        },
+        {
+            "key": "ui.tapToContinue",
+            "value": "Нажми для продолжения"
+        }
+    ]
+}

@@ -1,6 +1,7 @@
 using System;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.EventSystems;
 
 public class InputManager : MonoBehaviour
 {
@@ -11,8 +12,7 @@ public class InputManager : MonoBehaviour
     private Camera _mainCamera;
     private InputAction _touchPressAction;
     private InputAction _touchPositionAction;
-
-    // Флаг для отслеживания состояния нажатия
+    
     private bool _isDragging = false;
 
     private void Awake()
@@ -21,10 +21,6 @@ public class InputManager : MonoBehaviour
         
         _touchPressAction = new InputAction("TouchPress", binding: "<Pointer>/press");
         _touchPositionAction = new InputAction("TouchPosition", binding: "<Pointer>/position");
-
-        // Убираем подписку на события started и canceled, будем обрабатывать в Update
-        // _touchPressAction.started += ctx => StartDrag();
-        // _touchPressAction.canceled += ctx => EndDrag();
     }
 
     private void OnEnable()
@@ -45,20 +41,22 @@ public class InputManager : MonoBehaviour
 
         bool isPressed = _touchPressAction.IsPressed();
 
-        // Проверяем начало нажатия
         if (isPressed && !_isDragging)
         {
+            if (EventSystem.current.IsPointerOverGameObject())
+            {
+                return;
+            }
+
             StartDrag();
             _isDragging = true;
         }
-        // Проверяем окончание нажатия
         else if (!isPressed && _isDragging)
         {
             EndDrag();
             _isDragging = false;
         }
 
-        // Если нажатие продолжается
         if (_isDragging)
         {
             OnDrag?.Invoke(GetWorldPosition());

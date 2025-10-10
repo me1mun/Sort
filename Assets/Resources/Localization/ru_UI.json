@@ -1,8 +1,0 @@
-{
-  "items": [
-    { "key": "level_complete", "value": "Уровень пройден!" },
-    { "key": "continue", "value": "Продолжить" },
-    { "key": "music", "value": "Музыка" },
-    { "key": "sound", "value": "Звук" }
-  ]
-}

@@ -10,13 +10,15 @@ public class UIGroupIndicator : MonoBehaviour
     [SerializeField] private Sprite filledSprite;
     
     [Header("Animation Settings")]
-    private float baseBounceScale = 1.15f;
-    private float bounceIncrement = 0.05f;
+    [SerializeField] private AnimationCurve bounceCurve;
     
-    [Header("Audio Settings")]
-    private string collectSoundName = "Collect";
-    private float baseCollectPitch = 0.8f;
-    private float pitchStep = 0.1f;
+    private const float BounceDuration = 0.3f;
+    private const float BaseBounceScale = 1.15f;
+    private const float BounceIncrement = 0.05f;
+    
+    private const string CollectSoundName = "Collect";
+    private const float BaseCollectPitch = 0.8f;
+    private const float PitchStep = 0.1f;
     
     private Vector3 _originalScale;
     private Coroutine _activeBounceCoroutine;
@@ -28,65 +30,45 @@ public class UIGroupIndicator : MonoBehaviour
         SetEmpty();
     }
 
-    // Этот метод теперь вызывается для КАЖДОГО прилетевшего предмета
     public void SetFilled()
     {
-        // Меняем спрайт на "заполненный", если он еще не такой.
         if (iconImage.sprite != filledSprite)
         {
             iconImage.sprite = filledSprite;
         }
         
-        // Увеличиваем счетчик прилетов для этой группы
         _arrivalCount++;
-
-        // --- НОВАЯ ЛОГИКА ЗВУКА И АНИМАЦИИ ---
-        // 1. Рассчитываем высоту тона. Каждый следующий предмет звучит выше.
-        float currentPitch = baseCollectPitch + ((_arrivalCount - 1) * pitchStep);
         
-        // 2. Проигрываем звук с рассчитанной высотой тона.
-        AudioManager.Instance.PlayWithPitch(collectSoundName, currentPitch);
+        float currentPitch = BaseCollectPitch + ((_arrivalCount - 1) * PitchStep);
+        AudioManager.Instance.PlayWithPitch(CollectSoundName, currentPitch);
 
-        // 3. Рассчитываем силу "баунса".
-        float currentBounceMultiplier = baseBounceScale + ((_arrivalCount - 1) * bounceIncrement);
-        Vector3 peakScale = _originalScale * currentBounceMultiplier;
-        
-        // 4. Запускаем анимацию "баунса" с новой силой.
         if (_activeBounceCoroutine != null)
         {
             StopCoroutine(_activeBounceCoroutine);
         }
-        _activeBounceCoroutine = StartCoroutine(AnimateBounceCoroutine(peakScale));
+        _activeBounceCoroutine = StartCoroutine(AnimateBounceCoroutine());
     }
 
-    // Сбрасывает индикатор в начальное состояние для нового уровня
     public void SetEmpty()
     {
         iconImage.sprite = emptySprite;
         transform.localScale = _originalScale;
-        _arrivalCount = 0; // Сбрасываем счетчик
+        _arrivalCount = 0;
     }
 
-    private IEnumerator AnimateBounceCoroutine(Vector3 peakScale)
+    private IEnumerator AnimateBounceCoroutine()
     {
-        float duration = 0.2f;
-        float halfDuration = duration / 2f;
         float timer = 0f;
-        Vector3 currentScale = transform.localScale;
-
-        // Фаза 1: Увеличение
-        while (timer < halfDuration)
+        float currentBounceMultiplier = BaseBounceScale + ((_arrivalCount - 1) * BounceIncrement);
+        
+        while (timer < BounceDuration)
         {
-            transform.localScale = Vector3.Lerp(currentScale, peakScale, timer / halfDuration);
-            timer += Time.deltaTime;
-            yield return null;
-        }
+            float progress = timer / BounceDuration;
+            float curveValue = bounceCurve.Evaluate(progress);
+            
+            float scaleMultiplier = 1f + (currentBounceMultiplier - 1f) * curveValue;
+            transform.localScale = _originalScale * scaleMultiplier;
 
-        // Фаза 2: Возвращение
-        timer = 0f;
-        while (timer < halfDuration)
-        {
-            transform.localScale = Vector3.Lerp(peakScale, _originalScale, timer / halfDuration);
             timer += Time.deltaTime;
             yield return null;
         }

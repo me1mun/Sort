@@ -2,11 +2,11 @@ using UnityEngine;
 
 public abstract class BaseSettingUI : MonoBehaviour
 {
-    protected DataManager DataManagerInstance { get; private set; }
+    protected SettingsManager SettingsManagerInstance { get; private set; }
 
-    public virtual void Initialize(DataManager dataManager)
+    public virtual void Initialize(SettingsManager settingsManager)
     {
-        DataManagerInstance = dataManager;
+        SettingsManagerInstance = settingsManager;
     }
 
     public abstract void UpdateVisuals();

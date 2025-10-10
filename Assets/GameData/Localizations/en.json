@@ -1,0 +1,128 @@
+{
+    "items": [
+        {
+            "key": "groups.Bags",
+            "value": "Bags"
+        },
+        {
+            "key": "groups.Battle",
+            "value": "Battle"
+        },
+        {
+            "key": "groups.Beach",
+            "value": "Beach"
+        },
+        {
+            "key": "groups.Birthday",
+            "value": "Birthday"
+        },
+        {
+            "key": "groups.Blades",
+            "value": "Blades"
+        },
+        {
+            "key": "groups.BoardGames",
+            "value": "Board games"
+        },
+        {
+            "key": "groups.Boxes",
+            "value": "Crates"
+        },
+        {
+            "key": "groups.Boxing",
+            "value": "Boxing"
+        },
+        {
+            "key": "groups.Cemetery",
+            "value": "Cemetery"
+        },
+        {
+            "key": "groups.Clothes",
+            "value": "Clothes"
+        },
+        {
+            "key": "groups.Drinks",
+            "value": "Drinks"
+        },
+        {
+            "key": "groups.Elements",
+            "value": "Elements"
+        },
+        {
+            "key": "groups.FastFood",
+            "value": "Fast food"
+        },
+        {
+            "key": "groups.Fly",
+            "value": "Fly"
+        },
+        {
+            "key": "groups.Forest",
+            "value": "Forest"
+        },
+        {
+            "key": "groups.Furniture",
+            "value": "Furniture"
+        },
+        {
+            "key": "groups.Hike",
+            "value": "Hike"
+        },
+        {
+            "key": "groups.Luck",
+            "value": "Luck"
+        },
+        {
+            "key": "groups.Medicine",
+            "value": "Medicine"
+        },
+        {
+            "key": "groups.Money",
+            "value": "Money"
+        },
+        {
+            "key": "groups.Office",
+            "value": "Office"
+        },
+        {
+            "key": "groups.Police",
+            "value": "Police"
+        },
+        {
+            "key": "groups.StorageMedia",
+            "value": "Storage media"
+        },
+        {
+            "key": "groups.Time",
+            "value": "Time"
+        },
+        {
+            "key": "groups.Tourism",
+            "value": "Tourism"
+        },
+        {
+            "key": "groups.Transport",
+            "value": "Transport"
+        },
+        {
+            "key": "groups.Witch",
+            "value": "Witch"
+        },
+        {
+            "key": "ui.level",
+            "value": "Level"
+        },
+        {
+            "key": "ui.levelComplete",
+            "value": "Level complete!"
+        },
+        {
+            "key": "ui.settings",
+            "value": "Settings"
+        },
+        {
+            "key": "ui.tapToContinue",
+            "value": "Tap to continue"
+        }
+    ]
+}

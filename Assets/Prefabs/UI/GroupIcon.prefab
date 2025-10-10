@@ -52,6 +52,18 @@ MonoBehaviour:
   iconImage: {fileID: 1708686139952497814}
   emptySprite: {fileID: -6594316878398709707, guid: 4f241cc88e65642458f49de95c960738, type: 3}
   filledSprite: {fileID: -539363496738569150, guid: 55f022940aa808f4bbc39d181924e79f, type: 3}
+  bounceCurve:
+    serializedVersion: 2
+    m_Curve: []
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  bounceDuration: 0.2
+  baseBounceScale: 1.15
+  bounceIncrement: 0.05
+  collectSoundName: Collect
+  baseCollectPitch: 0.8
+  pitchStep: 0.1
 --- !u!1 &7142079228129483899
 GameObject:
   m_ObjectHideFlags: 0

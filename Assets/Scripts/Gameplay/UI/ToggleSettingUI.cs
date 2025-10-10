@@ -4,32 +4,46 @@ using UnityEngine.UI;
 public abstract class ToggleSettingUI : BaseSettingUI
 {
     [Header("UI References")]
-    [SerializeField] protected Button actionButton;
+    [SerializeField] protected UIButton actionButton;
     [SerializeField] protected Image stateImage;
     [SerializeField] protected Sprite onSprite;
     [SerializeField] protected Sprite offSprite;
 
-    public override void Initialize(DataManager dataManager)
+    public override void Initialize(SettingsManager settingsManager)
     {
-        base.Initialize(dataManager);
-        actionButton.onClick.AddListener(OnAction);
+        base.Initialize(settingsManager);
+        if (actionButton != null)
+        {
+            actionButton.OnClick.AddListener(OnAction);
+        }
+        SubscribeToEvents();
+    }
+
+    private void OnDestroy()
+    {
+        if (actionButton != null)
+        {
+            actionButton.OnClick.RemoveListener(OnAction);
+        }
+        UnsubscribeFromEvents();
     }
 
     public override void UpdateVisuals()
     {
-        stateImage.sprite = GetCurrentState() ? onSprite : offSprite;
+        if (stateImage != null)
+        {
+            stateImage.sprite = GetCurrentState() ? onSprite : offSprite;
+        }
     }
 
-    private void OnAction()
+    protected virtual void OnAction()
     {
         bool newState = !GetCurrentState();
         SetState(newState);
-        ApplySetting(newState);
-        DataManagerInstance.SaveSettings();
-        UpdateVisuals();
     }
     
     protected abstract bool GetCurrentState();
     protected abstract void SetState(bool newState);
-    protected abstract void ApplySetting(bool isOn);
+    protected abstract void SubscribeToEvents();
+    protected abstract void UnsubscribeFromEvents();
 }

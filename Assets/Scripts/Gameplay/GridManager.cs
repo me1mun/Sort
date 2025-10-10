@@ -1,105 +1,136 @@
-using System.Collections.Generic;
 using UnityEngine;
+using System.Collections.Generic;
+using System.Linq;
 
 public class GridManager
 {
+    public int Width { get; }
+    public int Height { get; }
+
     private readonly PropView[,] _grid;
-    private readonly int _width;
-    private readonly int _height;
+    private readonly float _cellSize;
+    private readonly Vector2 _gridOffset;
+    private readonly Vector3 _originPosition;
 
-    public GridManager(int width, int height)
+    public GridManager(LevelData levelData, float cellSize, int maxGridHeight, Vector3 originPosition)
     {
-        _width = width;
-        _height = height;
-        _grid = new PropView[width, height];
+        Height = Mathf.Min(levelData.requiredGroups.Count, maxGridHeight);
+        Width = levelData.requiredGroups.Any() ? levelData.requiredGroups.Max(g => g.items.Count) : 0;
+        
+        _grid = new PropView[Width, Height];
+        _cellSize = cellSize;
+        _originPosition = originPosition;
+        
+        float totalGridWidth = (Width - 1) * _cellSize;
+        float totalGridHeight = (Height - 1) * _cellSize;
+        _gridOffset = new Vector2(-totalGridWidth / 2f, -totalGridHeight / 2f);
     }
 
-    public PropView GetPropAt(int x, int y)
-    {
-        if (!IsWithinBounds(x, y)) return null;
-        return _grid[x, y];
-    }
-
-    public void SetPropAt(int x, int y, PropView prop)
-    {
-        if (!IsWithinBounds(x, y)) return;
-        _grid[x, y] = prop;
-    }
-
-    public void ClearCell(int x, int y)
-    {
-        if (!IsWithinBounds(x, y)) return;
-        _grid[x, y] = null;
-    }
+    public PropView GetPropAt(int x, int y) => IsWithinBounds(x, y) ? _grid[x, y] : null;
+    public void SetPropAt(int x, int y, PropView prop) { if (IsWithinBounds(x, y)) _grid[x, y] = prop; }
+    public void ClearCell(int x, int y) => SetPropAt(x, y, null);
+    public bool IsWithinBounds(int x, int y) => x >= 0 && x < Width && y >= 0 && y < Height;
+    public bool IsGridEmpty() => _grid.Cast<PropView>().All(prop => prop == null);
 
     public void SwapProps(Vector2Int posA, Vector2Int posB)
     {
-        PropView propA = _grid[posA.x, posA.y];
-        PropView propB = _grid[posB.x, posB.y];
-        
-        _grid[posA.x, posA.y] = propB;
-        _grid[posB.x, posB.y] = propA;
+        PropView propA = GetPropAt(posA.x, posA.y);
+        PropView propB = GetPropAt(posB.x, posB.y);
+
+        SetPropAt(posA.x, posA.y, propB);
+        SetPropAt(posB.x, posB.y, propA);
 
         if (propA != null) propA.GridPosition = posB;
         if (propB != null) propB.GridPosition = posA;
     }
-    
+
     public List<int> GetCompletedRows()
     {
         var completedRows = new List<int>();
-        for (int y = 0; y < _height; y++)
+        for (int y = 0; y < Height; y++)
         {
-            if (IsRowComplete(y))
+            PropView firstProp = GetPropAt(0, y);
+            if (firstProp == null) continue;
+
+            bool isRowComplete = true;
+            for (int x = 1; x < Width; x++)
+            {
+                PropView currentProp = GetPropAt(x, y);
+                if (currentProp == null || currentProp.AssignedGroup.groupKey != firstProp.AssignedGroup.groupKey)
+                {
+                    isRowComplete = false;
+                    break;
+                }
+            }
+
+            if (isRowComplete)
             {
                 completedRows.Add(y);
             }
         }
         return completedRows;
     }
-
-    private bool IsRowComplete(int y)
+    
+    public List<PropView> CollapseColumns()
     {
-        PropView firstProp = GetPropAt(0, y);
-        if (firstProp == null) return false;
-            
-        string firstGroupKey = firstProp.AssignedGroup.groupKey;
-        for (int x = 1; x < _width; x++)
+        var movedProps = new List<PropView>();
+        for (int x = 0; x < Width; x++)
         {
-            PropView currentProp = GetPropAt(x, y);
-            if (currentProp == null || currentProp.AssignedGroup.groupKey != firstGroupKey)
+            int emptySpaces = 0;
+            for (int y = 0; y < Height; y++)
             {
-                return false;
+                if (GetPropAt(x, y) == null)
+                {
+                    emptySpaces++;
+                }
+                else if (emptySpaces > 0)
+                {
+                    PropView prop = GetPropAt(x, y);
+                    Vector2Int newPos = new Vector2Int(x, y - emptySpaces);
+                    
+                    SetPropAt(x, y, null);
+                    SetPropAt(newPos.x, newPos.y, prop);
+                    prop.GridPosition = newPos;
+                    
+                    movedProps.Add(prop);
+                }
             }
         }
-        return true;
-    }
-
-    public bool IsWithinBounds(int x, int y)
-    {
-        return x >= 0 && x < _width && y >= 0 && y < _height;
-    }
-
-    public bool IsGridEmpty()
-    {
-        for (int y = 0; y < _height; y++)
-        {
-            for (int x = 0; x < _width; x++)
-            {
-                if (_grid[x, y] != null) return false;
-            }
-        }
-        return true;
+        return movedProps;
     }
     
-    public bool IsGridIdle()
+    public List<PropView> GetAllProps()
     {
-        for (int y = 0; y < _height; y++)
+        var props = new List<PropView>();
+        for (int y = 0; y < Height; y++)
         {
-            for (int x = 0; x < _width; x++)
+            for (int x = 0; x < Width; x++)
             {
-                if (_grid[x, y] != null && _grid[x, y].IsAnimating) return false;
+                if (_grid[x, y] != null)
+                {
+                    props.Add(_grid[x, y]);
+                }
             }
         }
-        return true;
+        return props;
+    }
+
+    public Vector3 GetWorldPosition(int x, int y)
+    {
+        return (Vector3)_gridOffset + new Vector3(x * _cellSize, y * _cellSize, 0) + _originPosition;
+    }
+
+    public Vector2Int GetGridPositionFromWorld(Vector2 worldPos)
+    {
+        Vector2 localPos = worldPos - ((Vector2)_originPosition + _gridOffset);
+        int x = Mathf.RoundToInt(localPos.x / _cellSize);
+        int y = Mathf.RoundToInt(localPos.y / _cellSize);
+        return new Vector2Int(x, y);
+    }
+    
+    public PropView GetPropAtWorldPosition(Vector2 worldPos)
+    {
+        Vector2Int gridPos = GetGridPositionFromWorld(worldPos);
+        return GetPropAt(gridPos.x, gridPos.y);
     }
 }

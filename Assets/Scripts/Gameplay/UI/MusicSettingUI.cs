@@ -1,8 +1,19 @@
 public class MusicSettingUI : ToggleSettingUI
 {
-    protected override bool GetCurrentState() => DataManagerInstance.Settings.isMusicOn;
+    protected override bool GetCurrentState() => SettingsManagerInstance.IsMusicOn;
+    protected override void SetState(bool newState) => SettingsManagerInstance.SetMusicOn(newState);
 
-    protected override void SetState(bool newState) => DataManagerInstance.Settings.isMusicOn = newState;
+    protected override void SubscribeToEvents()
+    {
+        if(SettingsManagerInstance != null)
+            SettingsManagerInstance.OnMusicSettingChanged += (isOn) => UpdateVisuals();
+    }
 
-    protected override void ApplySetting(bool isOn) => AudioManager.Instance.SetMusicVolume(isOn ? 1.0f : 0.0f);
+    protected override void UnsubscribeFromEvents()
+    {
+        if (SettingsManager.Instance != null)
+        {
+            SettingsManagerInstance.OnMusicSettingChanged -= (isOn) => UpdateVisuals();
+        }
+    }
 }

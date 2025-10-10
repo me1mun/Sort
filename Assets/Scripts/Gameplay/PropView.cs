@@ -1,19 +1,32 @@
 using System;
 using System.Collections;
 using UnityEngine;
+using Random = UnityEngine.Random;
 
 public class PropView : MonoBehaviour
 {
-    [Header("Animation Settings")]
-    private float _moveDuration = 0.1f;
-    private float _scaleDuration = 0.15f;
-    private float _selectedScaleMultiplier = 1.2f;
-    private AnimationCurve _moveCurve = AnimationCurve.EaseInOut(0, 0, 1, 1);
+    private const float SpawnDuration = 0.2f;
+    private const float MoveDuration = 0.15f;
+    private const float SelectDuration = 0.1f;
+    private const float SelectedScaleMultiplier = 1.3f;
+    private readonly AnimationCurve _animationCurve = AnimationCurve.EaseInOut(0, 0, 1, 1);
+
+    private const float CollectAnticipationDuration = 0.12f;
+    private const float CollectAnticipationDistance = 0.5f;
+    private const float CollectAnticipationScale = 1.3f;
+    private const float CollectFlightDuration = 0.4f;
+    private const float CollectFinalScale = 0.1f;
+    private const float CollectFlightArc = 2.0f;
+
+    private const float HintInterval = 3f;
+    private const float HintShakeDuration = 1.0f;
+    private const float HintShakeMagnitude = 10f;
+    private const float HintShakeFrequency = 15f;
 
     [Header("Component References")]
     [SerializeField] private SpriteRenderer spriteRenderer;
     [SerializeField] private GameObject spriteHolder;
-    [SerializeField] private int _flyToUISortingOrder = 10;
+    [SerializeField] private Transform visualToShake;
     
     public GroupData AssignedGroup { get; private set; }
     public ItemData AssignedItem { get; private set; }
@@ -21,121 +34,166 @@ public class PropView : MonoBehaviour
     public bool IsAnimating { get; private set; }
     
     private Vector3 _initialScale;
+    private Coroutine _scaleCoroutine;
+    private Coroutine _hintCoroutine;
+    
+    private const int FlyToUISortingOrder = 10;
+    private static readonly int DefaultSortingOrder = 1;
+    private static readonly int DraggedSortingOrder = 10;
 
     private void Awake()
     {
         _initialScale = spriteHolder.transform.localScale;
     }
 
-    // Вызывается, когда объект достают из пула
-    public void OnSpawn()
-    {
-        spriteHolder.transform.localScale = Vector3.zero;
-        spriteRenderer.sortingOrder = 1;
-        StartCoroutine(AnimateScale(_initialScale));
-    }
-
     public void Initialize(GroupData group, ItemData item, Vector2Int gridPos)
     {
         AssignedGroup = group;
         AssignedItem = item;
-        spriteRenderer.sprite = item.icon;
         GridPosition = gridPos;
+        spriteRenderer.sprite = item.icon;
         name = $"Prop_{gridPos.x}_{gridPos.y} ({group.groupKey})";
+    }
+
+    public void OnSpawn()
+    {
+        spriteHolder.transform.localScale = Vector3.zero;
+        ResetSortingOrder();
+        StartCoroutine(AnimateScale(_initialScale, SpawnDuration));
     }
 
     public void Select(bool isSelected)
     {
-        StopAllCoroutines(); // Прерываем другие анимации для мгновенной реакции
-        StartCoroutine(AnimateScale(isSelected ? _initialScale * _selectedScaleMultiplier : _initialScale));
+        if (_scaleCoroutine != null) StopCoroutine(_scaleCoroutine);
+        
+        Vector3 targetScale = isSelected ? _initialScale * SelectedScaleMultiplier : _initialScale;
+        _scaleCoroutine = StartCoroutine(AnimateScale(targetScale, SelectDuration));
     }
-    
-    // Публичный метод для запуска анимации сбора
-    public void Collect(Vector3 targetWorldPos, Action onArrival)
+
+    public Coroutine Collect(Vector3 targetWorldPos, Action onArrival)
     {
-        StartCoroutine(AnimateFlyAndCollect(targetWorldPos, onArrival));
+        StopHintAnimation();
+        return StartCoroutine(AnimateFlyAndCollect(targetWorldPos, onArrival));
     }
 
     public IEnumerator AnimateMove(Vector3 targetPosition)
     {
-        IsAnimating = true;
-        Vector3 startPosition = transform.position;
-        float time = 0f;
-
-        while (time < _moveDuration)
-        {
-            time += Time.deltaTime;
-            float t = time / _moveDuration;
-            transform.position = Vector3.Lerp(startPosition, targetPosition, _moveCurve.Evaluate(t));
-            yield return null;
-        }
-
+        yield return Animate(
+            MoveDuration, 
+            t => transform.position = Vector3.Lerp(transform.position, targetPosition, t)
+        );
         transform.position = targetPosition;
-        IsAnimating = false;
     }
     
-    private IEnumerator AnimateScale(Vector3 targetScale)
+    public void BringToFront()
     {
-        IsAnimating = true;
-        Vector3 startScale = spriteHolder.transform.localScale;
-        float time = 0f;
+        spriteRenderer.sortingOrder = DraggedSortingOrder;
+    }
 
-        while (time < _scaleDuration)
+    public void ResetSortingOrder()
+    {
+        spriteRenderer.sortingOrder = DefaultSortingOrder;
+    }
+    
+    public void StartHintAnimation()
+    {
+        StopHintAnimation();
+        _hintCoroutine = StartCoroutine(HintAnimationRoutine());
+    }
+
+    public void StopHintAnimation()
+    {
+        if (_hintCoroutine != null)
         {
-            time += Time.deltaTime;
-            spriteHolder.transform.localScale = Vector3.Lerp(startScale, targetScale, _moveCurve.Evaluate(time / _scaleDuration));
+            StopCoroutine(_hintCoroutine);
+            _hintCoroutine = null;
+        }
+        if (visualToShake != null) visualToShake.localRotation = Quaternion.identity;
+    }
+
+    private IEnumerator HintAnimationRoutine()
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(HintInterval * 0.25f);
+            yield return ShakeRoutine(HintShakeDuration, HintShakeMagnitude, HintShakeFrequency);
+            yield return new WaitForSeconds(HintInterval * 0.75f);
+        }
+    }
+
+    private IEnumerator ShakeRoutine(float duration, float magnitude, float frequency)
+    {
+        if (visualToShake == null) yield break;
+        Quaternion originalRotation = visualToShake.localRotation;
+        float elapsed = 0f;
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            float progress = elapsed / duration;
+            float damper = Mathf.Sin(progress * Mathf.PI);
+            float z = Mathf.Sin(elapsed * frequency) * magnitude * damper;
+            visualToShake.localRotation = originalRotation * Quaternion.Euler(0, 0, z);
             yield return null;
         }
+        visualToShake.localRotation = originalRotation;
+    }
 
+    private IEnumerator AnimateScale(Vector3 targetScale, float duration)
+    {
+        yield return Animate(
+            duration, 
+            t => spriteHolder.transform.localScale = Vector3.Lerp(spriteHolder.transform.localScale, targetScale, t)
+        );
         spriteHolder.transform.localScale = targetScale;
-        IsAnimating = false;
     }
-    
-    // Та самая анимация полета по дуге
-    public IEnumerator AnimateFlyAndCollect(Vector3 targetWorldPos, Action onArrival)
+
+    private IEnumerator AnimateFlyAndCollect(Vector3 targetWorldPos, Action onArrival)
     {
         IsAnimating = true;
-        spriteRenderer.sortingOrder = _flyToUISortingOrder;
-        Transform spriteTransform = spriteHolder.transform;
+        spriteRenderer.sortingOrder = FlyToUISortingOrder;
         Vector3 startPos = transform.position;
-        Vector3 startScale = spriteTransform.localScale;
+        Vector3 startScale = spriteHolder.transform.localScale;
+        Vector3 anticipationPos = startPos + (startPos - targetWorldPos).normalized * CollectAnticipationDistance;
+        Vector3 anticipationScale = startScale * CollectAnticipationScale;
         
-        // --- Фаза 1: Небольшой "отскок" назад и увеличение ---
-        float reverseDuration = 0.12f;
-        Vector3 reverseDirection = (startPos - targetWorldPos).normalized;
-        Vector3 reversePos = startPos + reverseDirection * 0.5f;
-        Vector3 reverseScale = startScale * 1.3f;
-
-        for (float t = 0; t < reverseDuration; t += Time.deltaTime)
+        yield return Animate(CollectAnticipationDuration, t =>
         {
-            float progress = t / reverseDuration;
-            transform.position = Vector3.Lerp(startPos, reversePos, progress);
-            spriteTransform.localScale = Vector3.Lerp(startScale, reverseScale, progress);
-            yield return null;
-        }
+            transform.position = Vector3.Lerp(startPos, anticipationPos, t);
+            spriteHolder.transform.localScale = Vector3.Lerp(startScale, anticipationScale, t);
+        });
 
-        // --- Фаза 2: Полет по дуге и уменьшение ---
-        float flightDuration = 0.4f;
-        Vector3 finalScale = Vector3.one * 0.1f;
-        
-        Vector3 controlPoint = (reversePos + targetWorldPos) / 2f + new Vector3(0, 2f, 0); // Контрольная точка для кривой
-        
-        for (float t = 0; t < flightDuration; t += Time.deltaTime)
+        Vector3 controlPoint = (anticipationPos + targetWorldPos) / 2f + Vector3.up * CollectFlightArc;
+        Vector3 finalScale = Vector3.one * CollectFinalScale;
+
+        yield return Animate(CollectFlightDuration, t =>
         {
-            float progress = t / flightDuration;
-            float oneMinusProgress = 1 - progress;
-            // Кривая Безье для дуги
-            transform.position = oneMinusProgress * oneMinusProgress * reversePos + 
-                                 2 * oneMinusProgress * progress * controlPoint + 
-                                 progress * progress * targetWorldPos;
-                                 
-            // Одновременное уменьшение размера
-            spriteTransform.localScale = Vector3.Lerp(reverseScale, finalScale, progress);
-            yield return null;
-        }
+            transform.position = GetPointOnQuadraticBezier(anticipationPos, controlPoint, targetWorldPos, t);
+            spriteHolder.transform.localScale = Vector3.Lerp(anticipationScale, finalScale, t);
+        });
         
-        // --- Фаза 3: Прибытие ---
         onArrival?.Invoke();
         IsAnimating = false;
+    }
+
+    private IEnumerator Animate(float duration, Action<float> updateAction)
+    {
+        IsAnimating = true;
+        float time = 0f;
+        while (time < duration)
+        {
+            time += Time.deltaTime;
+            float progress = _animationCurve.Evaluate(time / duration);
+            updateAction(progress);
+            yield return null;
+        }
+        updateAction(1);
+        IsAnimating = false;
+    }
+    
+    private static Vector3 GetPointOnQuadraticBezier(Vector3 p0, Vector3 p1, Vector3 p2, float t)
+    {
+        t = Mathf.Clamp01(t);
+        float oneMinusT = 1f - t;
+        return oneMinusT * oneMinusT * p0 + 2f * oneMinusT * t * p1 + t * t * p2;
     }
 }
