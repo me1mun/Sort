@@ -3489,7 +3489,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   gameplayController: {fileID: 2107963974}
-  confettiParticles: {fileID: 0}
   levelNumberText: {fileID: 1867629515}
   victoryText: {fileID: 1868292324}
   tapToContinueCanvasGroup: {fileID: 121954765}
@@ -4208,12 +4207,11 @@ MonoBehaviour:
   gridController: {fileID: 213397640}
   uiController: {fileID: 574625987}
   levelManager: {fileID: 1536239619}
-  propPool: {fileID: 505537228}
   mainCamera: {fileID: 519420031}
   levelCompletePopup: {fileID: 1589881714}
-  hintButton: {fileID: 1075450799}
   settingsButton: {fileID: 940379618}
   settingsPopup: {fileID: 2135594235}
+  hintUIButton: {fileID: 1075450801}
 --- !u!4 &2107963975
 Transform:
   m_ObjectHideFlags: 0

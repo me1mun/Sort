@@ -6,9 +6,8 @@ using UnityEngine;
 
 public class UIController : MonoBehaviour
 {
-    private const float GroupNameAnimDuration = 2f;
-    private const float GroupNameAnimFastDuration = 0.7f;
-    
+    private const float GroupNameAnimDuration = 1.5f;
+
     [Header("Level Info")]
     [SerializeField] private TextMeshProUGUI levelText;
     [SerializeField] private RectTransform indicatorsContainer;
@@ -17,28 +16,18 @@ public class UIController : MonoBehaviour
     [SerializeField] private CanvasGroup collectedGroupCanvasGroup;
     [SerializeField] private TextMeshProUGUI collectedGroupText;
     [SerializeField] private AnimationCurve alphaCurve;
-    
+
     private List<UIGroupIndicator> _indicators;
-    private Coroutine _groupNameQueueProcessor;
-    private Queue<string> _groupNameQueue = new Queue<string>();
+    private Coroutine _groupNameAnimation;
 
     private void Awake()
     {
-        if (indicatorsContainer != null)
-        {
-            _indicators = indicatorsContainer.GetComponentsInChildren<UIGroupIndicator>(true).ToList();
-        }
-        else
-        {
-            _indicators = new List<UIGroupIndicator>();
-            Debug.LogError("Indicators Container is not assigned in UIController!");
-        }
+        _indicators = indicatorsContainer.GetComponentsInChildren<UIGroupIndicator>(true).ToList();
     }
 
     public void InitializeUIForLevel(LevelData levelData)
     {
         int requiredCount = levelData?.requiredGroups?.Count ?? 0;
-        if (_indicators == null) return;
         for (int i = 0; i < _indicators.Count; i++)
         {
             bool isActive = i < requiredCount;
@@ -48,21 +37,13 @@ public class UIController : MonoBehaviour
                 _indicators[i].SetEmpty();
             }
         }
-        if(collectedGroupCanvasGroup != null)
-        {
-            collectedGroupCanvasGroup.alpha = 0;
-            _groupNameQueue.Clear();
-        }
+        collectedGroupCanvasGroup.alpha = 0;
     }
 
-    // Этот метод отвечает за текст "УРОВЕНЬ 5"
     public void UpdateLevelText(int level)
     {
-        if (levelText != null)
-        {
-            string localizedLevelString = LocalizationManager.Instance.Get("ui.level");
-            levelText.text = $"{localizedLevelString} {level}";
-        }
+        string localizedLevelString = LocalizationManager.Instance.Get("ui.level");
+        levelText.text = $"{localizedLevelString} {level}";
     }
 
     public Vector3 GetIndicatorScreenPosition(int index)
@@ -82,45 +63,28 @@ public class UIController : MonoBehaviour
         }
     }
 
-    // Этот метод отвечает за запуск анимации имени собранной группы (например, "Фрукты")
     public void ShowCollectedGroupName(string groupKey)
     {
-        if (collectedGroupText == null || collectedGroupCanvasGroup == null) return;
-        
-        _groupNameQueue.Enqueue(groupKey);
-        
-        if (_groupNameQueueProcessor == null)
+        if (_groupNameAnimation != null)
         {
-            _groupNameQueueProcessor = StartCoroutine(ProcessGroupNameQueue());
+            StopCoroutine(_groupNameAnimation);
         }
+        _groupNameAnimation = StartCoroutine(AnimateGroupName(groupKey));
     }
 
-    private IEnumerator ProcessGroupNameQueue()
+    private IEnumerator AnimateGroupName(string groupKey)
     {
-        while (_groupNameQueue.Count > 0)
+        string localizedName = LocalizationManager.Instance.Get($"groups.{groupKey}");
+        collectedGroupText.text = localizedName;
+
+        float elapsed = 0f;
+        while (elapsed < GroupNameAnimDuration)
         {
-            string currentGroupKey = _groupNameQueue.Dequeue();
-            string localizedName = LocalizationManager.Instance.Get($"groups.{currentGroupKey}");
-            collectedGroupText.text = localizedName;
-
-            float elapsed = 0f;
-            float duration = GroupNameAnimDuration;
-
-            while (elapsed < duration)
-            {
-                if (_groupNameQueue.Count > 0)
-                {
-                    duration = GroupNameAnimFastDuration;
-                }
-
-                elapsed += Time.deltaTime;
-                float progress = Mathf.Clamp01(elapsed / duration);
-                float alpha = alphaCurve.Evaluate(progress);
-                collectedGroupCanvasGroup.alpha = alpha;
-                
-                yield return null;
-            }
+            elapsed += Time.deltaTime;
+            float progress = Mathf.Clamp01(elapsed / GroupNameAnimDuration);
+            collectedGroupCanvasGroup.alpha = alphaCurve.Evaluate(progress);
+            yield return null;
         }
-        _groupNameQueueProcessor = null;
+        _groupNameAnimation = null;
     }
 }

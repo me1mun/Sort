@@ -18,7 +18,7 @@ public class PropView : MonoBehaviour
     private const float CollectFinalScale = 0.1f;
     private const float CollectFlightArc = 2.0f;
 
-    private const float HintInterval = 3f;
+    private const float HintInterval = 2.5f;
     private const float HintShakeDuration = 1.0f;
     private const float HintShakeMagnitude = 10f;
     private const float HintShakeFrequency = 15f;
@@ -115,9 +115,9 @@ public class PropView : MonoBehaviour
     {
         while (true)
         {
-            yield return new WaitForSeconds(HintInterval * 0.25f);
+            yield return new WaitForSeconds(HintInterval * 0.1f);
             yield return ShakeRoutine(HintShakeDuration, HintShakeMagnitude, HintShakeFrequency);
-            yield return new WaitForSeconds(HintInterval * 0.75f);
+            yield return new WaitForSeconds(HintInterval * 0.9f);
         }
     }
 

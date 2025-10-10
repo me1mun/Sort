@@ -10,30 +10,26 @@ public class DataManager : MonoBehaviour
 
     private string _progressSavePath;
     private string _settingsSavePath;
-    
-    private int _cachedPredefinedLevelsCount;
 
     private void Awake()
     {
-        if (Instance != null) { Destroy(gameObject); return; }
+        if (Instance != null)
+        {
+            Destroy(gameObject);
+            return;
+        }
         Instance = this;
         DontDestroyOnLoad(gameObject);
 
         _progressSavePath = Path.Combine(Application.persistentDataPath, "progress.json");
         _settingsSavePath = Path.Combine(Application.persistentDataPath, "settings.json");
-        
-        LoadProgress();
-        LoadSettings();
-    }
-    
-    public void CachePredefinedLevelCount(int count)
-    {
-        _cachedPredefinedLevelsCount = count;
+
+        LoadAllData();
     }
 
-    public void AdvanceToNextLevel()
+    public void AdvanceToNextLevel(int predefinedLevelsCount)
     {
-        if (Progress.predefinedLevelIndex < _cachedPredefinedLevelsCount)
+        if (Progress.predefinedLevelIndex < predefinedLevelsCount)
         {
             Progress.predefinedLevelIndex++;
         }
@@ -41,45 +37,55 @@ public class DataManager : MonoBehaviour
         {
             Progress.randomLevelCount++;
         }
-        
+        // Сохраняем только прогресс
         SaveProgress();
+    }
+
+    // --- Методы загрузки ---
+
+    public void LoadAllData()
+    {
+        LoadProgress();
+        LoadSettings();
     }
 
     public void LoadProgress()
     {
-        if (File.Exists(_progressSavePath))
-        {
-            string json = File.ReadAllText(_progressSavePath);
-            Progress = JsonUtility.FromJson<ProgressData>(json);
-        }
-        else
-        {
-            Progress = new ProgressData();
-        }
-    }
-
-    public void SaveProgress()
-    {
-        string json = JsonUtility.ToJson(Progress, true);
-        File.WriteAllText(_progressSavePath, json);
+        Progress = Load<ProgressData>(_progressSavePath);
     }
 
     public void LoadSettings()
     {
-        if (File.Exists(_settingsSavePath))
-        {
-            string json = File.ReadAllText(_settingsSavePath);
-            Settings = JsonUtility.FromJson<SettingsData>(json);
-        }
-        else
-        {
-            Settings = new SettingsData();
-        }
+        Settings = Load<SettingsData>(_settingsSavePath);
+    }
+
+    // --- Методы сохранения ---
+
+    public void SaveProgress()
+    {
+        Save(Progress, _progressSavePath);
     }
 
     public void SaveSettings()
     {
-        string json = JsonUtility.ToJson(Settings, true);
-        File.WriteAllText(_settingsSavePath, json);
+        Save(Settings, _settingsSavePath);
+    }
+
+    // --- Приватные обобщенные методы ---
+
+    private T Load<T>(string path) where T : new()
+    {
+        if (File.Exists(path))
+        {
+            string json = File.ReadAllText(path);
+            return JsonUtility.FromJson<T>(json);
+        }
+        return new T();
+    }
+
+    private void Save<T>(T data, string path)
+    {
+        string json = JsonUtility.ToJson(data, true);
+        File.WriteAllText(path, json);
     }
 }
