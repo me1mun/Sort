@@ -6,16 +6,16 @@ public class GridInputHandler : IDisposable
     public event Action<PropView, PropView> OnSwapRequested;
 
     private readonly InputManager _inputManager;
-    private readonly GridManager _gridManager;
+    private readonly Grid _grid;
     private readonly Func<bool> _isGridBusy;
     private readonly float _dragSmoothingSpeed = 20f;
     
     private PropView _draggedProp;
 
-    public GridInputHandler(InputManager inputManager, GridManager gridManager, Func<bool> isGridBusy)
+    public GridInputHandler(InputManager inputManager, Grid grid, Func<bool> isGridBusy)
     {
         _inputManager = inputManager;
-        _gridManager = gridManager;
+        _grid = grid;
         _isGridBusy = isGridBusy;
         SubscribeToInput();
     }
@@ -24,7 +24,7 @@ public class GridInputHandler : IDisposable
     {
         if (_isGridBusy()) return;
 
-        PropView prop = _gridManager.GetPropAtWorldPosition(worldPos);
+        PropView prop = _grid.GetPropAtWorldPosition(worldPos);
         if (prop != null && !prop.IsAnimating)
         {
             _draggedProp = prop;
@@ -50,10 +50,10 @@ public class GridInputHandler : IDisposable
         _draggedProp.Select(false);
         
         Vector2Int startPosition = _draggedProp.GridPosition;
-        Vector2Int dropPosition = _gridManager.GetGridPositionFromWorld(worldPos);
-        PropView targetProp = _gridManager.GetPropAt(dropPosition.x, dropPosition.y);
+        Vector2Int dropPosition = _grid.GetGridPositionFromWorld(worldPos);
+        PropView targetProp = _grid.GetPropAt(dropPosition.x, dropPosition.y);
 
-        bool isValidDrop = _gridManager.IsWithinBounds(dropPosition.x, dropPosition.y) && dropPosition != startPosition && targetProp != null;
+        bool isValidDrop = _grid.IsWithinBounds(dropPosition.x, dropPosition.y) && dropPosition != startPosition && targetProp != null;
 
         if (isValidDrop)
         {
@@ -61,7 +61,7 @@ public class GridInputHandler : IDisposable
         }
         else
         {
-            Vector3 originalWorldPos = _gridManager.GetWorldPosition(startPosition.x, startPosition.y);
+            Vector3 originalWorldPos = _grid.GetWorldPosition(startPosition.x, startPosition.y);
             _draggedProp.StartCoroutine(_draggedProp.AnimateMove(originalWorldPos));
         }
         

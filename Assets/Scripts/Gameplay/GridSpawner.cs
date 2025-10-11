@@ -14,13 +14,13 @@ public class GridSpawner
 
     private readonly Queue<ItemSpawnInfo> _spawnQueue;
     private readonly PropPool _propPool;
-    private readonly GridManager _gridManager;
+    private readonly Grid _grid;
 
-    public GridSpawner(LevelData levelData, int gridWidth, PropPool propPool, GridManager gridManager)
+    public GridSpawner(LevelData levelData, int gridWidth, PropPool propPool, Grid grid)
     {
         _propPool = propPool;
-        _gridManager = gridManager;
-        _spawnQueue = GenerateSpawnQueue(levelData, gridManager.Width);
+        _grid = grid;
+        _spawnQueue = GenerateSpawnQueue(levelData, grid.Width);
     }
     
     public bool HasItemsToSpawn() => _spawnQueue.Any();
@@ -31,26 +31,26 @@ public class GridSpawner
         
         var itemInfo = _spawnQueue.Dequeue();
         Vector3 startPosition = spawnAtTop 
-            ? _gridManager.GetWorldPosition(x, _gridManager.Height)
-            : _gridManager.GetWorldPosition(x, y);
+            ? _grid.GetWorldPosition(x, _grid.Height)
+            : _grid.GetWorldPosition(x, y);
 
         PropView prop = _propPool.Get();
         prop.transform.position = startPosition;
         prop.Initialize(itemInfo.Group, itemInfo.Item, new Vector2Int(x, y));
         prop.OnSpawn();
         
-        _gridManager.SetPropAt(x, y, prop);
+        _grid.SetPropAt(x, y, prop);
         return prop;
     }
     
     public List<PropView> RefillGrid()
     {
         var newProps = new List<PropView>();
-        for (int x = 0; x < _gridManager.Width; x++)
+        for (int x = 0; x < _grid.Width; x++)
         {
-            for (int y = 0; y < _gridManager.Height; y++)
+            for (int y = 0; y < _grid.Height; y++)
             {
-                if (_gridManager.GetPropAt(x, y) == null && HasItemsToSpawn())
+                if (_grid.GetPropAt(x, y) == null && HasItemsToSpawn())
                 {
                     var newProp = CreatePropAt(x, y, true);
                     if(newProp != null) newProps.Add(newProp);

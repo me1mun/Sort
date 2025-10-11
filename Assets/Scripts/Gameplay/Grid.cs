@@ -2,7 +2,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
 
-public class GridManager
+public class Grid
 {
     public int Width { get; }
     public int Height { get; }
@@ -12,7 +12,7 @@ public class GridManager
     private readonly Vector2 _gridOffset;
     private readonly Vector3 _originPosition;
 
-    public GridManager(LevelData levelData, float cellSize, int maxGridHeight, Vector3 originPosition)
+    public Grid(LevelData levelData, float cellSize, int maxGridHeight, Vector3 originPosition)
     {
         Height = Mathf.Min(levelData.requiredGroups.Count, maxGridHeight);
         Width = levelData.requiredGroups.Any() ? levelData.requiredGroups.Max(g => g.items.Count) : 0;

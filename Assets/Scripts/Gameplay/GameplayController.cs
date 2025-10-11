@@ -1,9 +1,12 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
 public class GameplayController : MonoBehaviour
 {
+    public static event Action OnScreenSizeChanged;
+
     [SerializeField] private GridController gridController;
     [SerializeField] private UIController uiController;
     [SerializeField] private LevelManager levelManager;
@@ -18,22 +21,42 @@ public class GameplayController : MonoBehaviour
     private LevelService _levelService;
     private HintService _hintService;
 
+    private const float MIN_VISIBLE_WIDTH = 5f;
+    private const float MIN_VISIBLE_HEIGHT = 7f;
+
+    private int _lastScreenWidth;
+    private int _lastScreenHeight;
+
     private void Awake()
     {
         _levelService = new LevelService(levelManager, DataManager.Instance);
         _hintService = new HintService(gridController, hintUIButton.gameObject);
+        
+        OnScreenSizeChanged += AdjustCameraSize;
     }
 
     private void Start()
     {
+        AdjustCameraSize();
         SubscribeToEvents();
         WireUpDependencies();
         StartCoroutine(StartLevelRoutine());
     }
 
+    private void Update()
+    {
+        if (Screen.width != _lastScreenWidth || Screen.height != _lastScreenHeight)
+        {
+            _lastScreenWidth = Screen.width;
+            _lastScreenHeight = Screen.height;
+            OnScreenSizeChanged?.Invoke();
+        }
+    }
+
     private void OnDestroy()
     {
         UnsubscribeFromEvents();
+        OnScreenSizeChanged -= AdjustCameraSize;
     }
 
     private void WireUpDependencies()
@@ -105,7 +128,16 @@ public class GameplayController : MonoBehaviour
         {
             uiController.UpdateLevelText(DataManager.Instance.Progress.DisplayLevel);
             uiController.InitializeUIForLevel(levelData);
-            gridController.Initialize(levelData);
+            gridController.Initialize(levelData, mainCamera);
         }
+    }
+
+    private void AdjustCameraSize()
+    {
+        float sizeForHeight = MIN_VISIBLE_HEIGHT / 2f;
+        float screenAspect = (float)Screen.width / Screen.height;
+        float sizeForWidth = MIN_VISIBLE_WIDTH / (2f * screenAspect);
+
+        mainCamera.orthographicSize = Mathf.Max(sizeForHeight, sizeForWidth);
     }
 }

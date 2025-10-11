@@ -1,10 +1,13 @@
 fileFormatVersion: 2
-guid: a3de547177263094ebe0045fbeb775f8
+guid: b1621623c7615fb47b9adcb674d8a6d3
 TextureImporter:
   internalIDToNameTable:
   - first:
-      213: 1495949864846589632
-    second: Icon_Music_on_0
+      213: -338494061925432953
+    second: Icon_Sound_0
+  - first:
+      213: -3865582235470984509
+    second: Icon_Sound_1
   externalObjects: {}
   serializedVersion: 13
   mipmaps:
@@ -126,12 +129,12 @@ TextureImporter:
     serializedVersion: 2
     sprites:
     - serializedVersion: 2
-      name: Icon_Music_on_0
+      name: Icon_Sound_0
       rect:
         serializedVersion: 2
         x: 0
         y: 0
-        width: 128
+        width: 97
         height: 128
       alignment: 0
       pivot: {x: 0, y: 0}
@@ -141,8 +144,30 @@ TextureImporter:
       physicsShape: []
       tessellationDetail: -1
       bones: []
-      spriteID: 0ce79f7e97ea2c410800000000000000
-      internalID: 1495949864846589632
+      spriteID: 7810b50b17d6d4bf0800000000000000
+      internalID: -338494061925432953
+      vertices: []
+      indices: 
+      edges: []
+      weights: []
+    - serializedVersion: 2
+      name: Icon_Sound_1
+      rect:
+        serializedVersion: 2
+        x: 102
+        y: 31
+        width: 25
+        height: 66
+      alignment: 0
+      pivot: {x: 0, y: 0}
+      border: {x: 0, y: 0, z: 0, w: 0}
+      customData: 
+      outline: []
+      physicsShape: []
+      tessellationDetail: -1
+      bones: []
+      spriteID: 3ca01b40071ba5ac0800000000000000
+      internalID: -3865582235470984509
       vertices: []
       indices: 
       edges: []
@@ -161,7 +186,8 @@ TextureImporter:
     spriteCustomMetadata:
       entries: []
     nameFileIdTable:
-      Icon_Music_on_0: 1495949864846589632
+      Icon_Sound_0: -338494061925432953
+      Icon_Sound_1: -3865582235470984509
   mipmapLimitGroupName: 
   pSDRemoveMatte: 0
   userData: 
