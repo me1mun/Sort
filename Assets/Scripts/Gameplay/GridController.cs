@@ -1,3 +1,4 @@
+// File: GridController.cs
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -37,9 +38,8 @@ public class GridController : MonoBehaviour
     public void Initialize(LevelData levelData, Camera mainCamera)
     {
         _camera = mainCamera;
-        GameplayController.OnScreenSizeChanged += UpdateGridPosition;
-        UpdateGridPosition();
-
+        GameManager.OnScreenSizeChanged += UpdateGridPosition;
+        
         _grid = new Grid(levelData, CellSize, MaxGridHeight, transform.position);
         _spawner = new GridSpawner(levelData, _grid.Width, propPool, _grid);
         _inputHandler = new GridInputHandler(inputManager, _grid, () => _isBusy);
@@ -57,15 +57,15 @@ public class GridController : MonoBehaviour
             _inputHandler.OnSwapRequested -= HandleSwapRequest;
             _inputHandler.Dispose();
         }
-        GameplayController.OnScreenSizeChanged -= UpdateGridPosition;
+        GameManager.OnScreenSizeChanged -= UpdateGridPosition;
     }
     
-    private void UpdateGridPosition()
+    private void UpdateGridPosition(Vector2 screenSize)
     {
         if (_camera == null) return;
 
-        float yOffsetPixels = Screen.height * 0.05f;
-        Vector3 screenCenterWithOffset = new Vector3(Screen.width / 2f, (Screen.height / 2f) - yOffsetPixels, 0);
+        float yOffsetPixels = screenSize.y * 0.05f;
+        Vector3 screenCenterWithOffset = new Vector3(screenSize.x / 2f, (screenSize.y / 2f) - yOffsetPixels, 0);
         float distance = Mathf.Abs(_camera.transform.position.z);
         screenCenterWithOffset.z = distance;
         

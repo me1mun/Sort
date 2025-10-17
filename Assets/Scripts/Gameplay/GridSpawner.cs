@@ -11,6 +11,9 @@ public class GridSpawner
         public ItemData Item { get; }
         public ItemSpawnInfo(GroupData g, ItemData i) { Group = g; Item = i; }
     }
+    
+    // This constant should be kept in sync with GridController's MaxGridHeight
+    private const int MaxGridHeight = 5;
 
     private readonly Queue<ItemSpawnInfo> _spawnQueue;
     private readonly PropPool _propPool;
@@ -92,39 +95,90 @@ public class GridSpawner
             }
         }
 
-        if (levelData.requiredGroups.Count < 2)
-        {
-            return new Queue<ItemSpawnInfo>(masterItemPool.OrderBy(x => Random.value));
-        }
+        List<ItemSpawnInfo> finalOrderedList;
+        const int maxAttempts = 20; // Failsafe to prevent rare infinite loops
+        int attempts = 0;
 
-        var itemsForStartingField = new List<ItemSpawnInfo>();
-        var remainingItems = new List<ItemSpawnInfo>(masterItemPool);
-        
-        var shuffledGroups = levelData.requiredGroups.OrderBy(x => Random.value).ToList();
-        var guaranteedGroups = shuffledGroups.Take(2).ToList();
-        var otherGroups = shuffledGroups.Skip(2).ToList();
+        int gridHeight = Mathf.Min(levelData.requiredGroups.Count, MaxGridHeight);
 
-        foreach (var group in guaranteedGroups)
+        do
         {
-            var itemsOfGroup = remainingItems.Where(info => info.Group == group).ToList();
-            itemsForStartingField.AddRange(itemsOfGroup);
-            remainingItems.RemoveAll(info => info.Group == group);
-        }
-
-        foreach (var group in otherGroups)
-        {
-            var representative = remainingItems.FirstOrDefault(info => info.Group == group);
-            if (representative != null)
+            // The entire shuffling logic is placed inside the loop to re-shuffle on each attempt.
+            if (levelData.requiredGroups.Count < 2)
             {
-                itemsForStartingField.Add(representative);
-                remainingItems.Remove(representative);
+                finalOrderedList = new List<ItemSpawnInfo>(masterItemPool.OrderBy(x => Random.value));
+            }
+            else
+            {
+                var itemsForStartingField = new List<ItemSpawnInfo>();
+                var remainingItems = new List<ItemSpawnInfo>(masterItemPool);
+        
+                var shuffledGroups = levelData.requiredGroups.OrderBy(x => Random.value).ToList();
+                var guaranteedGroups = shuffledGroups.Take(2).ToList();
+                var otherGroups = shuffledGroups.Skip(2).ToList();
+
+                foreach (var group in guaranteedGroups)
+                {
+                    var itemsOfGroup = remainingItems.Where(info => info.Group == group).ToList();
+                    itemsForStartingField.AddRange(itemsOfGroup);
+                    remainingItems.RemoveAll(info => info.Group == group);
+                }
+
+                foreach (var group in otherGroups)
+                {
+                    var representative = remainingItems.FirstOrDefault(info => info.Group == group);
+                    if (representative != null)
+                    {
+                        itemsForStartingField.Add(representative);
+                        remainingItems.Remove(representative);
+                    }
+                }
+        
+                finalOrderedList = new List<ItemSpawnInfo>();
+                finalOrderedList.AddRange(itemsForStartingField.OrderBy(x => Random.value));
+                finalOrderedList.AddRange(remainingItems.OrderBy(x => Random.value));
+            }
+
+            if (++attempts > maxAttempts)
+            {
+                Debug.LogWarning("Could not generate a valid grid without a pre-completed row. Proceeding anyway.");
+                break;
+            }
+            
+        } while (HasPrecompletedRow(finalOrderedList, gridWidth, gridHeight));
+        
+        return new Queue<ItemSpawnInfo>(finalOrderedList);
+    }
+
+    private bool HasPrecompletedRow(List<ItemSpawnInfo> items, int gridWidth, int gridHeight)
+    {
+        int initialItemCount = gridWidth * gridHeight;
+        if (items.Count < initialItemCount)
+        {
+            return false;
+        }
+
+        for (int y = 0; y < gridHeight; y++)
+        {
+            int rowIndex = y * gridWidth;
+            
+            var firstItemGroup = items[rowIndex].Group;
+            bool allSameGroup = true;
+            for (int x = 1; x < gridWidth; x++)
+            {
+                if (items[rowIndex + x].Group != firstItemGroup)
+                {
+                    allSameGroup = false;
+                    break;
+                }
+            }
+
+            if (allSameGroup)
+            {
+                return true;
             }
         }
         
-        var finalOrderedList = new List<ItemSpawnInfo>();
-        finalOrderedList.AddRange(itemsForStartingField.OrderBy(x => Random.value));
-        finalOrderedList.AddRange(remainingItems.OrderBy(x => Random.value));
-        
-        return new Queue<ItemSpawnInfo>(finalOrderedList);
+        return false;
     }
 }

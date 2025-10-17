@@ -13,9 +13,9 @@ MonoBehaviour:
   m_Name: Level_3
   m_EditorClassIdentifier: 
   requiredGroups:
+  - {fileID: 11400000, guid: 921a4563be407a14d862a2565d14960c, type: 2}
   - {fileID: 11400000, guid: fed09fd5b5c0ff34f85fb7a03eee0cee, type: 2}
-  - {fileID: 11400000, guid: a3716202bf7af364e95e81b8c4237b91, type: 2}
-  - {fileID: 11400000, guid: f3022198907ec284f9eb35f133253ff5, type: 2}
-  - {fileID: 11400000, guid: 46c35dd6da03b4641bac038026c92c20, type: 2}
-  - {fileID: 11400000, guid: cbf1b15984d0887409c6602c12badef3, type: 2}
+  - {fileID: 11400000, guid: 0cd29bb992f56c149848a86a3de14b7f, type: 2}
+  - {fileID: 11400000, guid: aa41d71ea431df548a0ab086633c1bcc, type: 2}
   - {fileID: 11400000, guid: 8cd9cd41265559442a64f0694da0535a, type: 2}
+  - {fileID: 11400000, guid: 7c17883ec43f76f49aadf32d22e36896, type: 2}

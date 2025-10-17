@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aca5ea0d96e707f42ac738c9a84e4c78, type: 3}
+  m_Name: group_Detective
+  m_EditorClassIdentifier: 
+  groupKey: Detective
+  items:
+  - {fileID: 11400000, guid: 78e9a5c1ed8a8d14091ede8220c1d5d0, type: 2}
+  - {fileID: 11400000, guid: 4c15d8dff5bd341459c28da4a1f59c03, type: 2}
+  - {fileID: 11400000, guid: 1c48b64a15ceb04489c1cc842fad2576, type: 2}
+  - {fileID: 11400000, guid: 6d8a3803e0e90954db9cc8bfe4b74531, type: 2}

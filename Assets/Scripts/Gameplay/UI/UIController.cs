@@ -11,6 +11,7 @@ public class UIController : MonoBehaviour
     [Header("Level Info")]
     [SerializeField] private TextMeshProUGUI levelText;
     [SerializeField] private RectTransform indicatorsContainer;
+    [SerializeField] private GameObject tutorialText;
 
     [Header("Collected Group Name Animation")]
     [SerializeField] private CanvasGroup collectedGroupCanvasGroup;
@@ -70,6 +71,11 @@ public class UIController : MonoBehaviour
             StopCoroutine(_groupNameAnimation);
         }
         _groupNameAnimation = StartCoroutine(AnimateGroupName(groupKey));
+    }
+
+    public void ShowTutorialText(bool isOn)
+    {
+        tutorialText.SetActive(isOn);
     }
 
     private IEnumerator AnimateGroupName(string groupKey)

@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aca5ea0d96e707f42ac738c9a84e4c78, type: 3}
+  m_Name: group_Luck
+  m_EditorClassIdentifier: 
+  groupKey: Luck
+  items:
+  - {fileID: 11400000, guid: 836f078b5156b61418b1af61ac5057cd, type: 2}
+  - {fileID: 11400000, guid: faf68a1263d74704a9e5919b80ec2587, type: 2}
+  - {fileID: 11400000, guid: 740c329088d717b45b267e43dea97247, type: 2}
+  - {fileID: 11400000, guid: 49cd7ee1ce81c7a49b992e7df7f56c9c, type: 2}

@@ -13,4 +13,6 @@ MonoBehaviour:
   m_Name: Level_6
   m_EditorClassIdentifier: 
   requiredGroups:
-  - {fileID: 11400000, guid: fcf92319d69d6e941b0f404ee41b55f1, type: 2}
+  - {fileID: 11400000, guid: cbf1b15984d0887409c6602c12badef3, type: 2}
+  - {fileID: 11400000, guid: a46f37c393df2264789465e1c9776441, type: 2}
+  - {fileID: 11400000, guid: a4dd9f5278a34804faf64e3b242a78ab, type: 2}

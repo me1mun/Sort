@@ -33,12 +33,20 @@
             "value": "Бокс"
         },
         {
+            "key": "groups.Casino",
+            "value": "Казино"
+        },
+        {
             "key": "groups.Cemetery",
             "value": "Кладбище"
         },
         {
             "key": "groups.Clothes",
             "value": "Одежда"
+        },
+        {
+            "key": "groups.Detective",
+            "value": "Детектив"
         },
         {
             "key": "groups.Drinks",
@@ -61,16 +69,32 @@
             "value": "Лес"
         },
         {
+            "key": "groups.Fruits",
+            "value": "Фрукты"
+        },
+        {
             "key": "groups.Furniture",
             "value": "Мебель"
+        },
+        {
+            "key": "groups.Halloween",
+            "value": "Хэллоуин"
         },
         {
             "key": "groups.Hike",
             "value": "Поход"
         },
         {
+            "key": "groups.Kitchen",
+            "value": "Кухня"
+        },
+        {
             "key": "groups.Luck",
             "value": "Удача"
+        },
+        {
+            "key": "groups.Magician",
+            "value": "Фокусы"
         },
         {
             "key": "groups.Medicine",
@@ -105,6 +129,10 @@
             "value": "Транспорт"
         },
         {
+            "key": "groups.Vegitables",
+            "value": "Овощи"
+        },
+        {
             "key": "groups.Witch",
             "value": "Ведьма"
         },
@@ -123,6 +151,10 @@
         {
             "key": "ui.tapToContinue",
             "value": "Нажми для продолжения"
+        },
+        {
+            "key": "ui.tutorial",
+            "value": "Ставь предметы с общим свойством в один ряд"
         }
     ]
 }

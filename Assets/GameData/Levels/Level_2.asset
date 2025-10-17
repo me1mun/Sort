@@ -13,8 +13,8 @@ MonoBehaviour:
   m_Name: Level_2
   m_EditorClassIdentifier: 
   requiredGroups:
-  - {fileID: 11400000, guid: aa41d71ea431df548a0ab086633c1bcc, type: 2}
-  - {fileID: 11400000, guid: 35f1d27f63cb9ac4394b59618071fd10, type: 2}
-  - {fileID: 11400000, guid: 43bb3183cc3bea645b488275a7a5f429, type: 2}
+  - {fileID: 11400000, guid: d06e02d0b8beaac4287f6e6c94686f82, type: 2}
   - {fileID: 11400000, guid: c307dbaae37af9c45ac043f67cb9e9a9, type: 2}
-  - {fileID: 11400000, guid: 031df86807a5aa64e9beed1424fd5ae5, type: 2}
+  - {fileID: 11400000, guid: 345ca42f5fe53464d9779d9de350a3c6, type: 2}
+  - {fileID: 11400000, guid: f5ae064d2a281a04ab83e5b724fcbad7, type: 2}
+  - {fileID: 11400000, guid: ec3b148df63cde84ba96f5acced95564, type: 2}

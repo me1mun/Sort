@@ -1,0 +1,20 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aca5ea0d96e707f42ac738c9a84e4c78, type: 3}
+  m_Name: group_Drinks
+  m_EditorClassIdentifier: 
+  groupKey: Drinks
+  items:
+  - {fileID: 11400000, guid: bbc1e637ba4bb7e49acbdad65c80d5dd, type: 2}
+  - {fileID: 11400000, guid: 796e56ca6ba1e6a4896274caf7c21dbd, type: 2}
+  - {fileID: 11400000, guid: aed6d1f8a5c50114eb957941018b6069, type: 2}
+  - {fileID: 11400000, guid: e8d56bb6ebf602e4b93353fbf1901b84, type: 2}

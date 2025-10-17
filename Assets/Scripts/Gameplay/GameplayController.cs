@@ -1,3 +1,4 @@
+// File: GameplayController.cs
 using System;
 using System.Collections;
 using UnityEngine;
@@ -5,8 +6,6 @@ using UnityEngine.SceneManagement;
 
 public class GameplayController : MonoBehaviour
 {
-    public static event Action OnScreenSizeChanged;
-
     [SerializeField] private GridController gridController;
     [SerializeField] private UIController uiController;
     [SerializeField] private LevelManager levelManager;
@@ -17,46 +16,34 @@ public class GameplayController : MonoBehaviour
     [SerializeField] private UIButton settingsButton;
     [SerializeField] private SettingsPopup settingsPopup;
     [SerializeField] private UIButton hintUIButton;
-
+    
     private LevelService _levelService;
     private HintService _hintService;
 
     private const float MIN_VISIBLE_WIDTH = 5f;
     private const float MIN_VISIBLE_HEIGHT = 7f;
 
-    private int _lastScreenWidth;
-    private int _lastScreenHeight;
 
     private void Awake()
     {
         _levelService = new LevelService(levelManager, DataManager.Instance);
         _hintService = new HintService(gridController, hintUIButton.gameObject);
         
-        OnScreenSizeChanged += AdjustCameraSize;
+        GameManager.OnScreenSizeChanged += AdjustCameraSize;
     }
 
     private void Start()
     {
-        AdjustCameraSize();
+        //AdjustCameraSize();
         SubscribeToEvents();
         WireUpDependencies();
         StartCoroutine(StartLevelRoutine());
     }
 
-    private void Update()
-    {
-        if (Screen.width != _lastScreenWidth || Screen.height != _lastScreenHeight)
-        {
-            _lastScreenWidth = Screen.width;
-            _lastScreenHeight = Screen.height;
-            OnScreenSizeChanged?.Invoke();
-        }
-    }
-
-    private void OnDestroy()
+        private void OnDestroy()
     {
         UnsubscribeFromEvents();
-        OnScreenSizeChanged -= AdjustCameraSize;
+        GameManager.OnScreenSizeChanged -= AdjustCameraSize;
     }
 
     private void WireUpDependencies()
@@ -104,6 +91,8 @@ public class GameplayController : MonoBehaviour
 
     private void HandleGroupCollected(string collectedGroupKey)
     {
+        uiController.ShowTutorialText(false);
+
         uiController.ShowCollectedGroupName(collectedGroupKey);
         _hintService.OnGroupCollected(collectedGroupKey);
     }
@@ -129,13 +118,19 @@ public class GameplayController : MonoBehaviour
             uiController.UpdateLevelText(DataManager.Instance.Progress.DisplayLevel);
             uiController.InitializeUIForLevel(levelData);
             gridController.Initialize(levelData, mainCamera);
+
+            // ИЗМЕНЕНО: Проверяем, является ли уровень первым, и если да - включаем текст
+            if (DataManager.Instance.Progress.DisplayLevel == 1)
+            {
+                uiController.ShowTutorialText(true);
+            }
         }
     }
 
-    private void AdjustCameraSize()
+    private void AdjustCameraSize(Vector2 screenSize)
     {
         float sizeForHeight = MIN_VISIBLE_HEIGHT / 2f;
-        float screenAspect = (float)Screen.width / Screen.height;
+        float screenAspect = screenSize.x / screenSize.y;
         float sizeForWidth = MIN_VISIBLE_WIDTH / (2f * screenAspect);
 
         mainCamera.orthographicSize = Mathf.Max(sizeForHeight, sizeForWidth);

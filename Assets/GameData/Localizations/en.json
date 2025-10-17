@@ -33,12 +33,20 @@
             "value": "Boxing"
         },
         {
+            "key": "groups.Casino",
+            "value": "Casino"
+        },
+        {
             "key": "groups.Cemetery",
             "value": "Cemetery"
         },
         {
             "key": "groups.Clothes",
             "value": "Clothes"
+        },
+        {
+            "key": "groups.Detective",
+            "value": "Detective"
         },
         {
             "key": "groups.Drinks",
@@ -61,16 +69,32 @@
             "value": "Forest"
         },
         {
+            "key": "groups.Fruits",
+            "value": "Fruits"
+        },
+        {
             "key": "groups.Furniture",
             "value": "Furniture"
+        },
+        {
+            "key": "groups.Halloween",
+            "value": "Halloween"
         },
         {
             "key": "groups.Hike",
             "value": "Hike"
         },
         {
+            "key": "groups.Kitchen",
+            "value": "Kitchen"
+        },
+        {
             "key": "groups.Luck",
             "value": "Luck"
+        },
+        {
+            "key": "groups.Magician",
+            "value": "Magician"
         },
         {
             "key": "groups.Medicine",
@@ -105,6 +129,10 @@
             "value": "Transport"
         },
         {
+            "key": "groups.Vegitables",
+            "value": "Vegitables"
+        },
+        {
             "key": "groups.Witch",
             "value": "Witch"
         },
@@ -123,6 +151,10 @@
         {
             "key": "ui.tapToContinue",
             "value": "Tap to continue"
+        },
+        {
+            "key": "ui.tutorial",
+            "value": "Line up items that share the same property"
         }
     ]
 }
