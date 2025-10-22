@@ -22,7 +22,6 @@ public class GameplayController : MonoBehaviour
     private const float MIN_VISIBLE_WIDTH = 5f;
     private const float MIN_VISIBLE_HEIGHT = 7f;
 
-
     private void Awake()
     {
         _levelService = new LevelService(levelManager, DataManager.Instance);
@@ -38,7 +37,7 @@ public class GameplayController : MonoBehaviour
         StartCoroutine(StartLevelRoutine());
     }
 
-        private void OnDestroy()
+    private void OnDestroy()
     {
         UnsubscribeFromEvents();
         GameManager.OnScreenSizeChanged -= AdjustCameraSize;
@@ -97,8 +96,11 @@ public class GameplayController : MonoBehaviour
 
     private void OnFinalVictory()
     {
+        int levelJustCompleted = DataManager.Instance.Progress.DisplayLevel;
+        
         DataManager.Instance.AdvanceToNextLevel(levelManager.PredefinedLevelsCount);
-        levelCompletePopup.Show(DataManager.Instance.Progress.DisplayLevel);
+        
+        levelCompletePopup.Show(levelJustCompleted);
     }
 
     public void LoadNextLevel()

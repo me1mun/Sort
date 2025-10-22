@@ -208,24 +208,24 @@ ParticleSystem:
       maxColor: {r: 1, g: 1, b: 1, a: 0.4117647}
       maxGradient:
         serializedVersion: 2
-        key0: {r: 0.9056604, g: 0.25275254, b: 0.18369527, a: 1}
-        key1: {r: 1, g: 0.58411086, b: 0, a: 1}
-        key2: {r: 1, g: 0.95592266, b: 0, a: 0}
-        key3: {r: 0.2719384, g: 0.9150943, b: 0.5856325, a: 0}
-        key4: {r: 0, g: 0.8228338, b: 0.8396226, a: 0}
+        key0: {r: 1, g: 0.58411086, b: 0, a: 1}
+        key1: {r: 1, g: 0.95592266, b: 0, a: 1}
+        key2: {r: 0.14978641, g: 0.38635373, b: 0.9622642, a: 0}
+        key3: {r: 0.14978641, g: 0.38635373, b: 0.9622642, a: 0}
+        key4: {r: 0.14978641, g: 0.38635373, b: 0.9622642, a: 0}
         key5: {r: 0.14978641, g: 0.38635373, b: 0.9622642, a: 0}
         key6: {r: 0.14978641, g: 0.38635373, b: 0.9622642, a: 0}
         key7: {r: 0.8425242, g: 0.3066038, b: 1, a: 0}
-        ctime0: 10794
-        ctime1: 24672
-        ctime2: 39707
-        ctime3: 48188
-        ctime4: 58018
+        ctime0: 21627
+        ctime1: 43253
+        ctime2: 65535
+        ctime3: 65535
+        ctime4: 65535
         ctime5: 65535
         ctime6: 65535
         ctime7: 62837
-        atime0: 19082
-        atime1: 29683
+        atime0: 0
+        atime1: 65535
         atime2: 0
         atime3: 0
         atime4: 0
@@ -233,8 +233,8 @@ ParticleSystem:
         atime6: 0
         atime7: 0
         m_Mode: 1
-        m_ColorSpace: -1
-        m_NumColorKeys: 6
+        m_ColorSpace: 0
+        m_NumColorKeys: 3
         m_NumAlphaKeys: 2
       minGradient:
         serializedVersion: 2
@@ -715,7 +715,7 @@ ParticleSystem:
     sphericalDirectionAmount: 0
     randomPositionAmount: 0
     radius:
-      value: 0.0001
+      value: 2
       mode: 0
       spread: 0
       speed:
@@ -944,7 +944,7 @@ ParticleSystem:
       countCurve:
         serializedVersion: 2
         minMaxState: 0
-        scalar: 20
+        scalar: 30
         minScalar: 30
         maxCurve:
           serializedVersion: 2
@@ -14648,7 +14648,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &5169766777476003676
 Transform:
   m_ObjectHideFlags: 0

@@ -149,6 +149,18 @@
             "value": "Witch"
         },
         {
+            "key": "ranks.diamond",
+            "value": "Diamond"
+        },
+        {
+            "key": "ranks.gold",
+            "value": "Gold"
+        },
+        {
+            "key": "ranks.iron",
+            "value": "Iron"
+        },
+        {
             "key": "ui.level",
             "value": "Level"
         },

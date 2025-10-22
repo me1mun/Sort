@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-public class LocalizationManager : MonoBehaviour
+public sealed class LocalizationManager : MonoBehaviour
 {
     public static LocalizationManager Instance { get; private set; }
     public event Action OnLanguageChanged;
@@ -13,6 +13,9 @@ public class LocalizationManager : MonoBehaviour
     [SerializeField] private LanguageConfig _config;
     
     private Dictionary<string, string> _translations;
+    private Dictionary<string, string> _fallbackTranslations;
+    
+    private const string FallbackLanguageCode = "en";
 
     private void Awake()
     {
@@ -29,6 +32,8 @@ public class LocalizationManager : MonoBehaviour
     
     private void Initialize()
     {
+        LoadFallbackLanguage();
+        
         string systemLangCode = _config.GetSystemLanguageCode();
         string initialLang = _config.DefaultLanguageCode;
 
@@ -55,37 +60,87 @@ public class LocalizationManager : MonoBehaviour
         {
             return $"[{key}]";
         }
-        return _translations.TryGetValue(key, out string value) ? value : $"[{key}]";
+
+        if (_translations.TryGetValue(key, out string value))
+        {
+            return value;
+        }
+        
+        if (_fallbackTranslations != null && _fallbackTranslations.TryGetValue(key, out string fallbackValue))
+        {
+            Debug.LogWarning($"Ключ '{key}' не найден в текущем языке '{CurrentLanguage}'. Используется фоллбэк с языка '{"en"}'!");
+            return fallbackValue;
+        }
+        
+        return $"[{key}]";
     }
 
     private void LoadAndApplyLanguage(string languageCode)
     {
-        var languageDef = _config.Languages.FirstOrDefault(lang => lang.LanguageCode == languageCode);
+        var languageDef = _config.Languages.FirstOrDefault(lang => lang.LanguageCode.Equals(languageCode, StringComparison.OrdinalIgnoreCase));
 
         if (languageDef == null || languageDef.TranslationFile == null)
         {
             Debug.LogError($"Конфигурация для языка '{languageCode}' не найдена или файл перевода не назначен!");
-            _translations = new Dictionary<string, string>();
+            if (_translations == null)
+            {
+                _translations = new Dictionary<string, string>();
+            }
             return;
         }
 
-        string jsonText = languageDef.TranslationFile.text;
-        
-        var newTranslations = new Dictionary<string, string>();
-        LocalizationData data = JsonUtility.FromJson<LocalizationData>(jsonText);
-        foreach (var item in data.items)
-        {
-            newTranslations[item.key] = item.value;
-        }
-        _translations = newTranslations;
+        _translations = LoadTranslationsFromFile(languageDef.TranslationFile);
         
         CurrentLanguage = languageCode;
-        // PlayerPrefs.SetString("language_code", CurrentLanguage); // <- СТРОКА УДАЛЕНА
         OnLanguageChanged?.Invoke();
         Debug.Log($"Язык изменен на: {CurrentLanguage}");
     }
+
+    private void LoadFallbackLanguage()
+    {
+        string fallbackCode = FallbackLanguageCode; 
+
+        if (!_config.IsLanguageSupported(fallbackCode))
+        {
+            Debug.LogError($"Конфигурация не поддерживает обязательный фоллбэк-язык '{fallbackCode}'. Фоллбэк будет недоступен.");
+            _fallbackTranslations = new Dictionary<string, string>();
+            return;
+        }
+
+        var languageDef = _config.Languages.FirstOrDefault(lang => lang.LanguageCode.Equals(fallbackCode, StringComparison.OrdinalIgnoreCase));
+        
+        if (languageDef == null || languageDef.TranslationFile == null)
+        {
+             Debug.LogError($"Конфигурация для фоллбэк-языка '{fallbackCode}' найдена, но файл перевода не назначен!");
+             _fallbackTranslations = new Dictionary<string, string>();
+             return;
+        }
+        
+        _fallbackTranslations = LoadTranslationsFromFile(languageDef.TranslationFile);
+        Debug.Log($"Фоллбэк-язык ({fallbackCode}) загружен.");
+    }
+    
+    private Dictionary<string, string> LoadTranslationsFromFile(TextAsset file)
+    {
+        string jsonText = file.text;
+        var newTranslations = new Dictionary<string, string>();
+        
+        try
+        {
+            LocalizationData data = JsonUtility.FromJson<LocalizationData>(jsonText);
+            foreach (var item in data.items)
+            {
+                newTranslations[item.key] = item.value; 
+            }
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"Ошибка при парсинге файла перевода '{file.name}': {e.Message}");
+        }
+        
+        return newTranslations;
+    }
 }
 
-// Вспомогательные классы для парсинга JSON (остаются без изменений)
 [Serializable] public class LocalizationData { public LocalizationItem[] items; }
 [Serializable] public class LocalizationItem { public string key; public string value; }

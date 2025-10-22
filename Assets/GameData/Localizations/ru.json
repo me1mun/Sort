@@ -149,6 +149,18 @@
             "value": "Ведьма"
         },
         {
+            "key": "ranks.diamond",
+            "value": "Алмаз"
+        },
+        {
+            "key": "ranks.gold",
+            "value": "Золото"
+        },
+        {
+            "key": "ranks.iron",
+            "value": "Железо"
+        },
+        {
             "key": "ui.level",
             "value": "Уровень"
         },

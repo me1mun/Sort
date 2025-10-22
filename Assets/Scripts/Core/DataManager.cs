@@ -37,11 +37,10 @@ public class DataManager : MonoBehaviour
         {
             Progress.randomLevelCount++;
         }
-        // Сохраняем только прогресс
         SaveProgress();
     }
 
-    // --- Методы загрузки ---
+    // --- Load Methods ---
 
     public void LoadAllData()
     {
@@ -59,7 +58,7 @@ public class DataManager : MonoBehaviour
         Settings = Load<SettingsData>(_settingsSavePath);
     }
 
-    // --- Методы сохранения ---
+    // --- Save Methods ---
 
     public void SaveProgress()
     {
@@ -71,7 +70,7 @@ public class DataManager : MonoBehaviour
         Save(Settings, _settingsSavePath);
     }
 
-    // --- Приватные обобщенные методы ---
+    // --- Private Generic Methods ---
 
     private T Load<T>(string path) where T : new()
     {

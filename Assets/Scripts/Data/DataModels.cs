@@ -15,6 +15,8 @@ public class ProgressData
     }
     
     public int DisplayLevel => predefinedLevelIndex + randomLevelCount + 1;
+    
+    public int CompletedLevelsCount => predefinedLevelIndex + randomLevelCount;
 }
 
 [Serializable]

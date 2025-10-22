@@ -48,9 +48,10 @@ public class GridSpawner
     public List<PropView> RefillGrid()
     {
         var newProps = new List<PropView>();
-        for (int x = 0; x < _grid.Width; x++)
+        
+        for (int y = _grid.Height - 1; y >= 0; y--)
         {
-            for (int y = 0; y < _grid.Height; y++)
+            for (int x = 0; x < _grid.Width; x++)
             {
                 if (_grid.GetPropAt(x, y) == null && HasItemsToSpawn())
                 {
