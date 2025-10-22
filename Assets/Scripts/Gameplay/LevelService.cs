@@ -12,7 +12,7 @@ public class LevelService
         _dataManager = dataManager;
     }
 
-    public LevelData GetCurrentLevel()
+    public (LevelData data, bool isTutorial) GetCurrentLevel()
     {
         int levelToLoad = GetLevelToLoad();
         LevelData originalLevelData = _levelManager.GetLevel(levelToLoad);
@@ -20,16 +20,16 @@ public class LevelService
         if (originalLevelData == null)
         {
             Debug.LogError($"Failed to load level data for level {levelToLoad}!");
-            return null;
+            return (null, false);
         }
 
         bool isTutorial = (_dataManager.Progress.predefinedLevelIndex == 0);
         if (isTutorial)
         {
-            return CreateTutorialLevel(originalLevelData);
+            return (CreateTutorialLevel(originalLevelData), true);
         }
 
-        return originalLevelData;
+        return (originalLevelData, false);
     }
 
     private int GetLevelToLoad()
@@ -44,12 +44,11 @@ public class LevelService
     {
         LevelData tutorialLevel = ScriptableObject.CreateInstance<LevelData>();
         tutorialLevel.requiredGroups = originalLevelData.requiredGroups
-            .Take(3)
             .Select(g =>
             {
                 var newGroup = ScriptableObject.CreateInstance<GroupData>();
                 newGroup.groupKey = g.groupKey;
-                newGroup.items = g.items.Take(3).ToList();
+                newGroup.items = g.items;
                 return newGroup;
             })
             .ToList();

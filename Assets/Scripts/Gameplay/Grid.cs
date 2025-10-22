@@ -12,10 +12,18 @@ public class Grid
     private readonly Vector2 _gridOffset;
     private readonly Vector3 _originPosition;
 
-    public Grid(LevelData levelData, float cellSize, int maxGridHeight, Vector3 originPosition)
+    public Grid(LevelData levelData, float cellSize, int maxGridHeight, Vector3 originPosition, bool isTutorial = false)
     {
         Height = Mathf.Min(levelData.requiredGroups.Count, maxGridHeight);
-        Width = levelData.requiredGroups.Any() ? levelData.requiredGroups.Max(g => g.items.Count) : 0;
+        
+        if (isTutorial)
+        {
+            Width = 3;
+        }
+        else
+        {
+            Width = 4;
+        }
         
         _grid = new PropView[Width, Height];
         _cellSize = cellSize;

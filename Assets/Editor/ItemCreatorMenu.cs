@@ -1,3 +1,4 @@
+// File: ItemCreatorMenu.cs
 using UnityEngine;
 using UnityEditor;
 using System.IO;
@@ -31,13 +32,43 @@ public static class ItemCreatorMenu
             // Если ассет уже существует, пропускаем
             if (File.Exists(itemAssetPath)) continue; 
 
-            // Загружаем спрайт
+            // Загружаем все ассеты из файла текстуры, чтобы найти спрайт.
+            // Это важно, если текстура имеет тип Texture Type: Sprite (2D and UI).
             Sprite iconSprite = AssetDatabase.LoadAssetAtPath<Sprite>(texturePath);
-            if (iconSprite == null) continue;
+            
+            // Если не удалось загрузить как спрайт напрямую, ищем все вложенные объекты.
+            if (iconSprite == null)
+            {
+                // Загружаем все объекты из файла и ищем первый Sprite
+                Object[] assets = AssetDatabase.LoadAllAssetsAtPath(texturePath);
+                foreach (Object asset in assets)
+                {
+                    if (asset is Sprite sprite)
+                    {
+                        iconSprite = sprite;
+                        break;
+                    }
+                }
+            }
+
+            if (iconSprite == null)
+            {
+                Debug.LogWarning($"Skipping {filename}: Could not find a valid Sprite asset at path {texturePath}. Ensure Texture Type is set to 'Sprite (2D and UI)'.");
+                continue;
+            }
 
             try
             {
-                var newItem = ScriptableObject.CreateInstance("ItemData"); 
+                // Инициализируем ItemData явно
+                ItemData newItem = ScriptableObject.CreateInstance<ItemData>(); 
+                
+                // --- УСТАНОВКА ПОЛЕЙ ---
+                // Устанавливаем itemKey: имя иконки без префикса "icon_"
+                newItem.itemKey = itemName; 
+                
+                // Устанавливаем icon: загруженный спрайт
+                newItem.icon = iconSprite;
+                // --- КОНЕЦ УСТАНОВКИ ПОЛЕЙ ---
 
                 AssetDatabase.CreateAsset(newItem, itemAssetPath);
                 createdCount++;
@@ -48,7 +79,7 @@ public static class ItemCreatorMenu
             }
         }
         
-        FinalizeAssetCreation($"Создано: {createdCount} новых предметов.");
+        FinalizeAssetCreation($"Создано: {createdCount} новых предметов. ({guids.Length} текстур проверено)");
     }
 
     private static void FinalizeAssetCreation(string logMessage)

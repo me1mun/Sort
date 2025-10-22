@@ -12,7 +12,6 @@ public class GridSpawner
         public ItemSpawnInfo(GroupData g, ItemData i) { Group = g; Item = i; }
     }
     
-    // This constant should be kept in sync with GridController's MaxGridHeight
     private const int MaxGridHeight = 5;
 
     private readonly Queue<ItemSpawnInfo> _spawnQueue;
@@ -86,7 +85,7 @@ public class GridSpawner
             }
             else if (normalizedItems.Count > gridWidth)
             {
-                normalizedItems = normalizedItems.Take(gridWidth).ToList();
+                normalizedItems = normalizedItems.OrderBy(x => Random.value).Take(gridWidth).ToList();
             }
 
             foreach (var item in normalizedItems)
@@ -96,14 +95,13 @@ public class GridSpawner
         }
 
         List<ItemSpawnInfo> finalOrderedList;
-        const int maxAttempts = 20; // Failsafe to prevent rare infinite loops
+        const int maxAttempts = 20; 
         int attempts = 0;
 
         int gridHeight = Mathf.Min(levelData.requiredGroups.Count, MaxGridHeight);
 
         do
         {
-            // The entire shuffling logic is placed inside the loop to re-shuffle on each attempt.
             if (levelData.requiredGroups.Count < 2)
             {
                 finalOrderedList = new List<ItemSpawnInfo>(masterItemPool.OrderBy(x => Random.value));

@@ -19,6 +19,11 @@ public class HintService
 
         AdService.Instance.ShowAd("HintReward", ShowHint);
     }
+    
+    public void ShowTutorialHint()
+    {
+        ShowHint();
+    }
 
     private void ShowHint()
     {

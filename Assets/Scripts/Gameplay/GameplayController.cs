@@ -1,4 +1,3 @@
-// File: GameplayController.cs
 using System;
 using System.Collections;
 using UnityEngine;
@@ -34,7 +33,6 @@ public class GameplayController : MonoBehaviour
 
     private void Start()
     {
-        //AdjustCameraSize();
         SubscribeToEvents();
         WireUpDependencies();
         StartCoroutine(StartLevelRoutine());
@@ -112,19 +110,27 @@ public class GameplayController : MonoBehaviour
     {
         yield return null;
 
-        LevelData levelData = _levelService.GetCurrentLevel();
+        (LevelData levelData, bool isTutorial) = _levelService.GetCurrentLevel();
+        
         if (levelData != null)
         {
             uiController.UpdateLevelText(DataManager.Instance.Progress.DisplayLevel);
             uiController.InitializeUIForLevel(levelData);
-            gridController.Initialize(levelData, mainCamera);
+            gridController.Initialize(levelData, isTutorial, mainCamera);
 
-            // ИЗМЕНЕНО: Проверяем, является ли уровень первым, и если да - включаем текст
-            if (DataManager.Instance.Progress.DisplayLevel == 1)
+            yield return StartCoroutine(gridController.PopulateInitialField());
+
+            if (isTutorial)
             {
-                uiController.ShowTutorialText(true);
+                HandleTutorialStart();
             }
         }
+    }
+
+    private void HandleTutorialStart()
+    {
+        uiController.ShowTutorialText(true);
+        _hintService.ShowTutorialHint();
     }
 
     private void AdjustCameraSize(Vector2 screenSize)

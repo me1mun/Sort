@@ -45,6 +45,10 @@
             "value": "Одежда"
         },
         {
+            "key": "groups.ComputerDevices",
+            "value": "Компьютерные девайсы"
+        },
+        {
             "key": "groups.Detective",
             "value": "Детектив"
         },
@@ -113,6 +117,10 @@
             "value": "Полиция"
         },
         {
+            "key": "groups.RangedWeapon",
+            "value": "Дальнее оружие"
+        },
+        {
             "key": "groups.StorageMedia",
             "value": "Носители информации"
         },
@@ -131,6 +139,10 @@
         {
             "key": "groups.Vegitables",
             "value": "Овощи"
+        },
+        {
+            "key": "groups.Weight",
+            "value": "Тяжести"
         },
         {
             "key": "groups.Witch",

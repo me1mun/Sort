@@ -22,3 +22,15 @@ MonoBehaviour:
     LanguageCode: ru
     SystemLanguage: 30
     TranslationFile: {fileID: 4900000, guid: af87855ac25b18d4f9f8314c97ca7c1e, type: 3}
+  - LanguageName: Ukrainian
+    LanguageCode: ua
+    SystemLanguage: 38
+    TranslationFile: {fileID: 4900000, guid: b2973aff83816a44b98d9753d77ca719, type: 3}
+  - LanguageName: Polish
+    LanguageCode: pl
+    SystemLanguage: 27
+    TranslationFile: {fileID: 4900000, guid: 137f3cfa6e7490f4da63e5b05b8d66df, type: 3}
+  - LanguageName: German
+    LanguageCode: de
+    SystemLanguage: 15
+    TranslationFile: {fileID: 4900000, guid: 10df6c9b7f3163b43becb6d0aa10fe7a, type: 3}

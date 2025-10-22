@@ -45,6 +45,10 @@
             "value": "Clothes"
         },
         {
+            "key": "groups.ComputerDevices",
+            "value": "Computer devices"
+        },
+        {
             "key": "groups.Detective",
             "value": "Detective"
         },
@@ -113,6 +117,10 @@
             "value": "Police"
         },
         {
+            "key": "groups.RangedWeapon",
+            "value": "RangedWeapon"
+        },
+        {
             "key": "groups.StorageMedia",
             "value": "Storage media"
         },
@@ -131,6 +139,10 @@
         {
             "key": "groups.Vegitables",
             "value": "Vegitables"
+        },
+        {
+            "key": "groups.Weight",
+            "value": "Weight"
         },
         {
             "key": "groups.Witch",

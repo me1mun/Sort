@@ -1,3 +1,4 @@
+// File: GroupManagerWindow.cs
 using UnityEngine;
 using UnityEditor;
 using System.Collections.Generic;
@@ -9,7 +10,7 @@ public class GroupManagerWindow : EditorWindow
     private const string ITEMS_DATA_FOLDER = "Assets/GameData/Items";
     private const string GROUPS_FOLDER = "Assets/GameData/Groups";
     private const int DESIRED_ITEM_COUNT = 4;
-    private const float ITEM_BLOCK_WIDTH = 64f; 
+    private const float ITEM_BLOCK_WIDTH = 64; 
     private const float ITEM_BLOCK_HEIGHT = 50f;
 
     private List<GroupData> _allGroups = new List<GroupData>();
@@ -18,7 +19,7 @@ public class GroupManagerWindow : EditorWindow
     
     private Vector2 _scrollPosition;
     private Vector2 _groupScrollPosition;
-    private Vector2 _itemPoolScrollPosition;
+    private Vector2 _itemPoolScrollPosition; // Эта прокрутка будет вертикальной
     
     private string _groupSearch = "";
     private string _itemSearch = "";
@@ -37,9 +38,15 @@ public class GroupManagerWindow : EditorWindow
         _allGroups = LoadAssets<GroupData>(new[] { GROUPS_FOLDER }).OrderBy(g => g.name).ToList();
         _allItems = LoadAssets<ItemData>(new[] { ITEMS_DATA_FOLDER }).OrderBy(i => i.name).ToList();
         
-        foreach (var group in _allGroups.Where(group => !_groupFoldouts.ContainsKey(group)))
+        foreach (var group in _allGroups)
         {
-            _groupFoldouts[group] = false;
+            // Очищаем группы от null-ссылок сразу при загрузке данных
+            CleanGroupItems(group);
+
+            if (!_groupFoldouts.ContainsKey(group))
+            {
+                _groupFoldouts[group] = false;
+            }
         }
     }
 
@@ -65,6 +72,8 @@ public class GroupManagerWindow : EditorWindow
         if (Event.current.type == EventType.DragUpdated || Event.current.type == EventType.DragPerform) Repaint();
         if (GUI.changed) AssetDatabase.SaveAssets();
     }
+    
+    // ... (Методы DrawSection, DrawSearchToolbar, DrawGroupManager и другие остаются без изменений, кроме вызова CheckForIntersections)
 
     private void DrawSection(string title, System.Action content, params GUILayoutOption[] options)
     {
@@ -135,6 +144,9 @@ public class GroupManagerWindow : EditorWindow
 
             if (_groupFoldouts[group])
             {
+                // *** Автоматическая очистка и отображение предупреждения/сообщения ***
+                CheckForIntersections(group); // Этот метод теперь включает очистку
+
                 EditorGUI.indentLevel++;
                 
                 string newGroupKey = EditorGUILayout.TextField("Group Key:", group.groupKey);
@@ -149,8 +161,6 @@ public class GroupManagerWindow : EditorWindow
 
                 EditorGUILayout.LabelField("Items:", EditorStyles.miniBoldLabel);
                 DrawGroupItemsInRow(group);
-                
-                CheckForIntersections(group);
             }
             
             EditorGUILayout.EndVertical();
@@ -180,7 +190,7 @@ public class GroupManagerWindow : EditorWindow
         // 3. Wrapping logic
         float currentX = 0;
         const float SPACING = 5f; 
-        const float ROW_SPACING = 8f; // Вертикальный отступ между строками
+        const float ROW_SPACING = 8f; 
 
         EditorGUILayout.BeginHorizontal(); 
         GUILayout.FlexibleSpace(); 
@@ -191,6 +201,8 @@ public class GroupManagerWindow : EditorWindow
         for (int i = 0; i < group.items.Count; i++)
         {
             var item = group.items[i];
+            // Поскольку null-ссылки должны быть удалены CleanGroupItems(), 
+            // этот if (item == null) continue; теоретически не нужен, но оставляем на всякий случай
             if (item == null) continue;
             
             float requiredWidth = ITEM_BLOCK_WIDTH + SPACING; 
@@ -200,7 +212,6 @@ public class GroupManagerWindow : EditorWindow
                 GUILayout.FlexibleSpace(); 
                 EditorGUILayout.EndHorizontal();
                 
-                // Добавление вертикального отступа между строками
                 GUILayout.Space(ROW_SPACING); 
                 
                 EditorGUILayout.BeginHorizontal(); 
@@ -318,17 +329,56 @@ public class GroupManagerWindow : EditorWindow
         }
     }
 
+    // === НОВЫЙ МЕТОД: Автоматическая очистка списка предметов от null-ссылок ===
+    private void CleanGroupItems(GroupData group)
+    {
+        // Фильтруем все null-ссылки
+        var cleanedItems = group.items.Where(i => i != null).ToList();
+        
+        // Если количество изменилось, значит, были null-ссылки, которые нужно удалить
+        if (cleanedItems.Count != group.items.Count)
+        {
+            // Используем Undo для возможности отката изменений
+            Undo.RecordObject(group, "Remove Null Items from Group");
+            group.items = cleanedItems;
+            EditorUtility.SetDirty(group);
+            
+            Debug.Log($"[GroupManager] Автоматически удалено {group.items.Count - cleanedItems.Count} пустых (null) ссылок из группы '{group.name}'.");
+        }
+    }
+
+    // === МОДИФИЦИРОВАНО: CheckForIntersections теперь выполняет чистку ===
+    private void CheckForIntersections(GroupData group)
+    {
+        // Проверяем наличие null-ссылок перед очисткой
+        bool hadNullsBeforeCheck = group.items.Any(i => i == null);
+        
+        // Выполняем автоматическую очистку
+        CleanGroupItems(group);
+
+        // Если null-ссылки были и теперь они удалены, показываем сообщение об успехе
+        if (hadNullsBeforeCheck && !group.items.Any(i => i == null))
+        {
+            EditorGUILayout.HelpBox("Автоматически удалены пустые (null) ссылки на предметы. Ассет группы обновлен.", MessageType.Info);
+        }
+        
+        // Если null-ссылки были, но CleanGroupItems не справился (чего не должно быть), выводим ошибку.
+        if (group.items.Any(i => i == null))
+        {
+             EditorGUILayout.HelpBox("Группа содержит не поддающиеся удалению пустые (null) ссылки. Пожалуйста, проверьте ассет вручную.", MessageType.Error);
+        }
+    }
+
     private void DrawItemPool()
     {
+        // ... (логика DrawItemPool остается без изменений)
         DrawSearchToolbar(ref _itemSearch);
 
-        if (string.IsNullOrEmpty(_itemSearch))
+        if (string.IsNullOrEmpty(_itemSearch) || _itemSearch.Length < 2)
         {
             EditorGUILayout.HelpBox("Введите название предмета в поле поиска выше, чтобы отобразить пул для перетаскивания.", MessageType.Info);
             return;
         }
-
-        _itemPoolScrollPosition = EditorGUILayout.BeginScrollView(_itemPoolScrollPosition, "box", GUILayout.ExpandHeight(true));
 
         string s = _itemSearch.ToLower();
         var filteredItems = _allItems.Where(item => item != null && 
@@ -338,16 +388,56 @@ public class GroupManagerWindow : EditorWindow
         if (!filteredItems.Any())
         {
             EditorGUILayout.LabelField("No items found matching criteria.");
+            return;
         }
-        else
+
+        // Вертикальная прокрутка для Item Pool
+        _itemPoolScrollPosition = EditorGUILayout.BeginScrollView(_itemPoolScrollPosition, "box", GUILayout.ExpandHeight(true));
+        
+        // Логика переноса строк для сетки
+        float currentX = 0;
+        const float SPACING = 5f; 
+        const float ROW_SPACING = 8f; 
+
+        EditorGUILayout.BeginHorizontal(); 
+        GUILayout.FlexibleSpace(); 
+
+        // Ширина доступной области внутри скролла Item Pool
+        float viewWidth = EditorGUIUtility.currentViewWidth - 60; 
+        int itemsInCurrentRow = 0;
+        
+        for (int i = 0; i < filteredItems.Count; i++)
         {
-            EditorGUILayout.BeginHorizontal(EditorStyles.helpBox);
-            foreach (var item in filteredItems)
+            var item = filteredItems[i];
+            
+            float requiredWidth = ITEM_BLOCK_WIDTH + SPACING; 
+            
+            if (currentX + requiredWidth > viewWidth && itemsInCurrentRow > 0)
             {
-                DrawItemPreview(item, ITEM_BLOCK_WIDTH, ITEM_BLOCK_HEIGHT); 
+                GUILayout.FlexibleSpace(); 
+                EditorGUILayout.EndHorizontal();
+                
+                GUILayout.Space(ROW_SPACING); 
+                
+                EditorGUILayout.BeginHorizontal(); 
+                GUILayout.FlexibleSpace(); 
+                currentX = 0; 
+                itemsInCurrentRow = 0;
             }
-            EditorGUILayout.EndHorizontal();
+
+            DrawItemPreview(item, ITEM_BLOCK_WIDTH, ITEM_BLOCK_HEIGHT);
+            
+            currentX += requiredWidth;
+            itemsInCurrentRow++;
+            
+            if (i < filteredItems.Count - 1 && currentX + requiredWidth <= viewWidth)
+            {
+                 GUILayout.Space(SPACING);
+            }
         }
+        
+        GUILayout.FlexibleSpace(); 
+        EditorGUILayout.EndHorizontal(); 
 
         EditorGUILayout.EndScrollView();
     }
@@ -378,7 +468,6 @@ public class GroupManagerWindow : EditorWindow
     private void CreateGroupAsset()
     {
         EnsureFolderExists(GROUPS_FOLDER);
-        // Предполагается, что GroupData является ScriptableObject
         var newGroup = CreateInstance<GroupData>(); 
         newGroup.groupKey = _newGroupName;
 
@@ -387,7 +476,6 @@ public class GroupManagerWindow : EditorWindow
 
         AssetDatabase.CreateAsset(newGroup, uniquePath);
         
-        // Финализация
         AssetDatabase.SaveAssets();
         AssetDatabase.Refresh();
         EditorUtility.FocusProjectWindow();
@@ -396,14 +484,6 @@ public class GroupManagerWindow : EditorWindow
 
         _newGroupName = "";
         ReloadAllData();
-    }
-
-    private void CheckForIntersections(GroupData group)
-    {
-        if (group.items.Any(i => i == null))
-        {
-            EditorGUILayout.HelpBox("Группа содержит пустые (null) ссылки на предметы.", MessageType.Warning);
-        }
     }
 
     private void EnsureFolderExists(string path)
