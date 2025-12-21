@@ -10,7 +10,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 25a4a1f17789ad444822db8dcdeb8227, type: 3}
-  m_Name: Item_Weight
+  m_Name: Item_Kettlebell
   m_EditorClassIdentifier: 
   itemKey: Weight
   icon: {fileID: 21300000, guid: 74d83386085a20c43bd3b14e33f71dea, type: 3}
